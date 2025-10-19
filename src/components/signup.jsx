@@ -30,7 +30,7 @@ const Signup = () => {
 
   const signupForm = async (event) => {
     event.preventDefault();
-    const url = "http://localhost:3060/auth/register";
+    const url = "https://quickbite-backendd.onrender.com/auth/register";
     const userDetails = { name, email, password };
 
     const options = {

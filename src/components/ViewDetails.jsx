@@ -17,7 +17,7 @@ const ViewDetails = () => {
   useEffect(() => {
     const getItem = async () => {
       try {
-        const url = `http://localhost:3060/foodItems/getItemId/${id}`;
+        const url = `https://quickbite-backendd.onrender.com/foodItems/getItemId/${id}`;
         const response = await fetch(url);
         const data = await response.json();
         setItem(data.food);

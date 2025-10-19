@@ -34,7 +34,7 @@ const Fooddetails = () => {
   useEffect(() => {
     const details = async () => {
       try {
-        let url = `http://localhost:3060/foodItems/filter/${category}?type=${selectedType}`;
+        let url = `https://quickbite-backendd.onrender.com/foodItems/filter/${category}?type=${selectedType}`;
         if (searchTerm) url += `&search=${searchTerm}`;
         const response = await fetch(url);
         const data = await response.json();
@@ -61,7 +61,7 @@ const Fooddetails = () => {
         },
         body: JSON.stringify({ itemId: id, quantity, size }),
       };
-      const response = await fetch("http://localhost:3060/cart/addItem", options);
+      const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", options);
       const data = await response.json();
       console.log(data);
     } catch (err) {

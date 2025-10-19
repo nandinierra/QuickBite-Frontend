@@ -11,7 +11,7 @@ const Cart = () => {
   
   const fetchCartItems = async () => {
     try {
-      const response = await fetch("http://localhost:3060/cart/getItems", {
+      const response = await fetch("https://quickbite-backendd.onrender.com/cart/getItems", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const Cart = () => {
   const handleDelete = async (itemId) => {
     try {
       const response = await fetch(
-        `http://localhost:3060/cart/deleteItem/${itemId}`,
+        `https://quickbite-backendd.onrender.com/cart/deleteItem/${itemId}`,
         {
           method: "DELETE",
           headers: {
@@ -70,7 +70,7 @@ const Cart = () => {
 
   const handleClearCart = async () => {
     try {
-      const response = await fetch("http://localhost:3060/cart/clear", {
+      const response = await fetch("https://quickbite-backendd.onrender.com/cart/clear", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

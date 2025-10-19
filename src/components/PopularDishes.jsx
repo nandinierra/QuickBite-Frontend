@@ -13,7 +13,7 @@ const PopularDishes = () => {
   useEffect(() => {
     const getPopularDishes = async () => {
       try {
-        const response = await fetch("http://localhost:3060/foodItems/popular/get");
+        const response = await fetch("https://quickbite-backendd.onrender.com/foodItems/popular/get");
         const data = await response.json();
         if (response.ok) setPopularDishes(data.food);
       } catch (error) {
@@ -26,7 +26,7 @@ const PopularDishes = () => {
   const handleAddToCart = (dish) => {
     const postItem = async () => {
       try {
-        const response = await fetch("http://localhost:3060/cart/addItem", {
+        const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

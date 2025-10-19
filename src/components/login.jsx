@@ -21,7 +21,7 @@ const Login = () => {
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
-    const url = "http://localhost:3060/auth/login";
+    const url = "https://quickbite-backendd.onrender.com/auth/login";
     const userDetails = { email, password };
     const options = {
       method: "POST",
