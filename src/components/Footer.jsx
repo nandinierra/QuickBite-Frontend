@@ -3,15 +3,14 @@ import {
   faFacebookF,
   faTwitter,
   faInstagram,
-  faLinkedinIn,
-} from "@fortawesome/free-brands-svg-icons";
+  faLinkedinIn,} from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="bg-black bottom-0 w-full text-gray-300 py-12 px-6">
+    <footer className="bg-black  w-full text-gray-300 py-12 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-center sm:text-left">
         {/* Left - Brand Section */}
         <div>
@@ -22,7 +21,7 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Center - Navigation */}
+       
         <div className="flex flex-col items-center sm:items-start">
           <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
           <ul className="space-y-2">
@@ -85,7 +84,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Line */}
+      
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm text-gray-400">
         © {new Date().getFullYear()} QuickBite. All Rights Reserved.
       </div>

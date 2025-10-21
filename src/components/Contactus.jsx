@@ -4,7 +4,7 @@
 
 const ContactUs = () => {
   return (
-    <section className="min-h-screen mt-7 bg-gray-50 flex flex-col items-center py-16 px-6">
+    <section className=" md:mt-32 min-h-screen mt-7 bg-gray-50 flex flex-col items-center py-16 px-6">
       {/* Heading */}
       <div className="max-w-4xl text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-4">

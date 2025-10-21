@@ -12,21 +12,35 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [error, setError] = useState("");
-
+ 
   const nameInput = (event) => {
+    setErrorMsg("");
     setUsername(event.target.value);
-    setError("");
-  };
+    
+  }; 
+
+  const emailInput=(event)=>{
+        setErrorMsg("");
+        setEmail(event.target.value);
+         
+  }
+  const passwordInput=(event)=>{
+      setErrorMsg("");
+      setPassword(event.target.value)
+  }
+
 
   const onSubmitSuccess = () => {
+    console.log("on submit success")
     navigate("/login", { replace: true });
   };
 
   const onSubmitFailure = (e) => {
+    console.log(e)
     setShowErrorMsg(true);
     setErrorMsg(e);
   };
+
 
   const signupForm = async (event) => {
     event.preventDefault();
@@ -48,6 +62,7 @@ const Signup = () => {
       onSubmitFailure(data.message);
     }
   };
+
 
   const token = Cookies.get("jwt_token");
   if (token) {
@@ -90,7 +105,7 @@ const Signup = () => {
           </label>
           <input
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={emailInput}
             type="email"
             id="email"
             placeholder="example@gmail.com"
@@ -105,7 +120,7 @@ const Signup = () => {
           </label>
           <input
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={passwordInput}
             type="password"
             id="password"
             placeholder="Enter your password"
@@ -114,7 +129,7 @@ const Signup = () => {
         </div>
 
        
-        {error && <p className="text-red-500 text-center text-sm mb-2">{error}</p>}
+        
         {showErrorMsg && (
           <p className="text-red-500 text-center text-sm mb-2">{errorMsg}</p>
         )}
@@ -125,7 +140,19 @@ const Signup = () => {
           className="bg-gradient-to-r mt-4 cursor-pointer from-red-700 to-orange-600 py-2 sm:py-3 rounded-lg font-semibold text-white text-sm sm:text-base hover:scale-105 hover:shadow-lg transition-transform duration-300"
         >
           Sign Up
-        </button>
+        </button> 
+
+          <p className="text-center text-sm sm:text-base mt-4 text-gray-300">
+  Already have an account?{" "}
+  <span
+    onClick={() => navigate("/login")}
+    className="text-red-400 hover:text-red-500 cursor-pointer font-semibold"
+  >
+    Login
+  </span>
+</p>
+
+
       </form>
     </div>
   );

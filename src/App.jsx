@@ -22,7 +22,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <div className="flex flex-col justify-between min-h-screen">
       {!hiddenpath&&<Navbar/>}
       <Routes>
             <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />

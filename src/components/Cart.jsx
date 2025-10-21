@@ -34,7 +34,7 @@ const Cart = () => {
   const updateQuantity = async (itemId, action) => {
     try {
       const response = await fetch(
-        `http://localhost:3060/cart/update/${itemId}`,
+        `https://quickbite-backendd.onrender.com/cart/update/${itemId}`,
         {
           method: "PUT",
           headers: {
@@ -89,7 +89,16 @@ const Cart = () => {
   };
 
   if (loading)
-    return <p className="text-center mt-20 text-gray-500">Loading your cart...</p>;
+    return   <div className="flex flex-col justify-center items-center h-[70vh] space-y-4">
+      <div className="flex gap-3 text-4xl animate-bounce">
+        <span>🍕</span>
+        <span>🍔</span>
+        <span>🥤</span>
+      </div>
+      <p className="text-gray-500 text-lg font-medium animate-pulse">
+        Getting your cart ready...
+      </p>
+    </div>
 
   if (!cart || !cart.foodItems || cart.foodItems.length === 0)
     return (
@@ -127,6 +136,8 @@ const Cart = () => {
       0;
     return acc + price * item.quantity;
   }, 0);
+
+
 
   return (
     <div className="max-w-5xl mx-auto mb-12 mt-20 p-6 bg-gray-50 rounded-2xl shadow-lg">
@@ -218,7 +229,9 @@ const Cart = () => {
             Order Now
           </button>
         </div>
-      </div>
+      </div> 
+
+
     </div>
   );
 };

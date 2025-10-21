@@ -1,3 +1,5 @@
+
+
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Slider from "react-slick";
@@ -64,12 +66,12 @@ const PopularDishes = () => {
     </svg>
   );
 
-  // ✅ Fully responsive slider configuration
- const settings = {
+
+const settings = {
   dots: true,
   infinite: true,
   speed: 600,
-  slidesToShow: 4, // Default (xl and up)
+  slidesToShow: 4, 
   slidesToScroll: 1,
   autoplay: true,
   autoplaySpeed: 3000,
@@ -77,28 +79,39 @@ const PopularDishes = () => {
 
   responsive: [
     {
-      breakpoint: 1280, // lg (Laptop / Small Desktop)
+      breakpoint: 1536, // ≤1536px
       settings: { slidesToShow: 4 },
     },
     {
-      breakpoint: 1024, // md (Medium Tablet / Small Laptop)
+      breakpoint: 1280, // ≤1280px
       settings: { slidesToShow: 3 },
     },
     {
-      breakpoint: 767, // sm (Tablets)
+      breakpoint: 1024, // ≤1024px
       settings: { slidesToShow: 2 },
     },
     {
-      breakpoint: 640, // Mobile
+      breakpoint: 900, // extra safety layer for tablets
+      settings: { slidesToShow: 2 },
+    },
+    {
+      breakpoint: 768, // ≤768px
       settings: {
         slidesToShow: 1,
         centerMode: true,
-        centerPadding: "100px",
+        centerPadding: "40px",
+      },
+    },
+    {
+      breakpoint: 480, // ≤480px
+      settings: {
+        slidesToShow: 1,
+        centerMode: true,
       },
     },
   ],
-  
 };
+
 
   return (
     <section className="py-16 bg-gray-50">
@@ -114,9 +127,10 @@ const PopularDishes = () => {
         
         <div className="popular-dishes-carousel mb-12">
           <Slider {...settings}>
+
             {popularDishes.map((dish) => (
-              <div key={dish._id} className="px-3 flex justify-center">
-                <div className="bg-white w-[250px] sm:w-[270px] md:w-[280px] rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <div key={dish._id} className="px-3 flex justify-center ">
+                <div className="bg-white mr-3 w-[350px] sm:w-[280px] md:w-[280px] rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                 
                   <div className="relative h-48 bg-gray-200 overflow-hidden">
                     <img
@@ -134,7 +148,7 @@ const PopularDishes = () => {
                     </div>
                   </div>
 
-                  {/* Info */}
+                  
                   <div className="p-5 flex flex-col h-58">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="text-xl font-bold text-gray-800 truncate">{dish.name}</h3>
@@ -149,15 +163,17 @@ const PopularDishes = () => {
                       <span className="text-2xl font-bold text-red-500">₹{dish.price.regular}</span>
                       <button
                         onClick={() => handleAddToCart(dish)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300"
+                        className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300"
                       >
                         Add to Cart
                       </button>
                     </div>
                   </div>
+
                 </div>
               </div>
             ))}
+
           </Slider>
         </div>
       </div>

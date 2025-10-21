@@ -14,15 +14,18 @@ const Login = () => {
     navigate("/", { replace: true });
   };
 
+
   const onSubmitFailure = (e) => {
     setShowErrorMsg(true);
     setErrorMsg(e);
   };
 
+
   const submitLoginForm = async (event) => {
     event.preventDefault();
     const url = "https://quickbite-backendd.onrender.com/auth/login";
     const userDetails = { email, password };
+
     const options = {
       method: "POST",
       headers: {
@@ -30,6 +33,7 @@ const Login = () => {
       },
       body: JSON.stringify(userDetails),
     };
+
     const response = await fetch(url, options);
     const data = await response.json();
     console.log(data);
@@ -39,7 +43,10 @@ const Login = () => {
     } else {
       onSubmitFailure(data.message);
     }
+
   };
+
+
 
   const token = Cookies.get("jwt_token");
   if (token) {
@@ -89,9 +96,9 @@ const Login = () => {
           />
         </div>
 
-        {errorMsg && (
+        {/* {errorMsg && (
           <p className="text-red-500 text-center text-sm mb-3">{errorMsg}</p>
-        )}
+        )} */}
         {showErrorMsg && (
           <p className="text-red-500 text-center text-sm mb-3">{errorMsg}</p>
         )}
@@ -103,6 +110,15 @@ const Login = () => {
         >
           Login
         </button>
+        <p className="text-center text-sm sm:text-base mt-4 text-gray-300">
+  Don’t have an account?{" "}
+  <span
+    onClick={() => navigate("/signup")}
+    className="text-red-400 hover:text-red-500 cursor-pointer font-semibold"
+  >
+    Sign up
+  </span>
+</p>
       </form>
     </div>
   );

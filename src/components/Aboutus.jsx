@@ -3,7 +3,7 @@
 
 const AboutUs = () => {
   return (
-    <section className=" mt-7 min-h-screen bg-gray-50 flex flex-col items-center py-16 px-6">
+    <section className="md:mt-32 mt-7 min-h-screen bg-gray-50 flex flex-col items-center py-16 px-6">
       <div className="max-w-6xl text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-4">
           About <span className="text-red-600">QuickBite</span>

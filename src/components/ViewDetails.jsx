@@ -1,19 +1,18 @@
 
-
-
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
+import ClipLoader from "react-spinners/ClipLoader"
 
 const ViewDetails = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [size,setSize] = useState("Regular")
-  const token=Cookies.get("jwt_token")
-  
+  const [size, setSize] = useState("Regular");
+  const token = Cookies.get("jwt_token");
+
   useEffect(() => {
     const getItem = async () => {
       try {
@@ -29,93 +28,107 @@ const ViewDetails = () => {
   }, [id]);
 
   const handleIncrease = () => setQuantity((prev) => prev + 1);
-  const handleDecrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const handleDecrease = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleAddToCart = () => {
-    console.log("Added to cart:", { ...item, quantity });
-     const postItem = async ()=>{
-        const options={
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${token}`
-          },
-          
-          body:JSON.stringify({itemId:id,
-            quantity,size
-          })
-        }
-        const response=await fetch("http://localhost:3060/cart/addItem", options)
-        const data=await response.json()
-        console.log(data)
-        navigate("/cart")
-     }
-     postItem()
+    const postItem = async () => {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ itemId: id, quantity, size }),
+      };
+      const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", options);
+      const data = await response.json();
+      console.log(data);
+      navigate("/cart");
+    };
+    postItem();
   };
 
+  if (!item) return <div className=' mt-45 flex justify-center items-center'><ClipLoader color="#fb2c36"/></div>;
 
 
-  if (!item) return <p className="text-center mt-10">Loading item details...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-20">
-  
-      <div className="flex flex-col md:flex-row gap-6">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="w-full md:w-1/2 rounded-2xl object-cover shadow-lg"
-        />
+    <div className=" h-[90%] flex flex-col justify-center">
+    <div className="mx-auto  mt-20">
 
-        {/* Info Section */}
-        <div className="flex flex-col justify-between">
+      <div className="flex flex-col lg:h-[440px] md:w-[80%] lg:w-[100%] m-auto mb-4 lg:flex-row gap-10 bg-white rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300">
+       
+
+        <div className="md:w-full lg:h-[440px] relative group">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover rounded-l-3xl transition-transform duration-500 group-hover:scale-105"
+          />
+          <span className="absolute top-4 right-4 bg-yellow-400 text-white px-3 py-1 rounded-full font-bold shadow-lg">
+            {item.type}
+          </span>
+        </div>
+
+
+        <div className="md:w-full lg:h-[407px]  flex flex-col justify-between p-6">
+
           <div>
-            <h2 className="text-3xl font-bold mb-2">{item.name}</h2>
-            <p className="text-gray-600 mb-1">
-              <strong>Category:</strong> {item.category}
-            </p>
-            <p className="text-gray-600 mb-1">
-              <strong>Type:</strong> {item.type}
-            </p>
-            <p className="text-gray-700 mt-3">{item.description}</p>
-          </div>
+            <h2 className="text-4xl font-extrabold mb-3 text-gray-800">{item.name}</h2>
+            <p className="text-gray-500 mb-1"><strong>Category:</strong> {item.category}</p>
+            <p className="text-gray-500 mb-3"><strong>Type:</strong> {item.type}</p>
+            <p className="text-gray-700 mb-4">{item.description}</p>
 
-
-          
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Price:</h3>
-            <div className="text-gray-800 space-y-1">
-              <button onClick={()=>setSize("Regular")}>Regular: ₹{item.price.regular}</button>
-              <button onClick={()=>setSize("Medium")}>Medium: ₹{item.price.medium}</button>
-              <button onClick={()=>setSize("Large")}>Large: ₹{item.price.large}</button>
+            {/* Price Selection */}
+            <h3 className="text-xl font-semibold mb-2">Choose Size:</h3>
+            <div className="flex gap-4 mb-4">
+              {["Regular", "Medium", "Large"].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSize(s)}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                    size === s
+                      ? "bg-green-600 text-white shadow-lg scale-105"
+                      : "bg-gray-200 text-gray-800 hover:bg-green-100"
+                  }`}
+                >
+                  {s}: ₹{item.price[s.toLowerCase()]}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Quantity and Add to Cart */}
-          <div className="mt-6 flex items-center gap-4">
+         
+          <div className="flex items-center gap-4 mt-6">
             <button
               onClick={handleDecrease}
-              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold"
+              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
             >
               −
             </button>
             <span className="text-lg font-semibold">{quantity}</span>
             <button
               onClick={handleIncrease}
-              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold"
+              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
             >
               +
             </button>
 
             <button
               onClick={handleAddToCart}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 ml-6"
+              className="ml-6 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition-transform hover:scale-105"
             >
               Add to Cart
             </button>
           </div>
-        </div>
+
+        </div> 
+
+
       </div>
+      
+    </div>
     </div>
   );
 };
