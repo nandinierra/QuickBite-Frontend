@@ -119,7 +119,7 @@ const Navbar = () => {
         />
         <button
           onClick={logoutBtn}
-          className="hidden md:block bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
+          className="hidden md:block cursor-pointer bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
         >
           Logout
         </button>
@@ -170,6 +170,7 @@ const Navbar = () => {
           >
             Contact Us
           </p>
+
           <button
             onClick={() => {
               logoutBtn();
@@ -179,6 +180,7 @@ const Navbar = () => {
           >
             Logout
           </button>
+
         </div>
       )}
     </nav>

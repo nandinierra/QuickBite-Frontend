@@ -58,25 +58,25 @@ const Footer = () => {
           <div className="flex gap-4 justify-center sm:justify-end">
             <p
               onClick={()=>navigate("/")}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
+              className="w-9 h-9 cursor-pointer flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
             >
               <FontAwesomeIcon icon={faFacebookF} />
             </p>
             <p
              onClick={()=>navigate("/")}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
+              className="w-9 h-9 flex cursor-pointer items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
             >
               <FontAwesomeIcon icon={faTwitter} />
             </p>
             <p
               onClick={()=>navigate("/")}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
+              className="w-9 h-9 flex cursor-pointer items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
             >
               <FontAwesomeIcon icon={faInstagram} />
             </p>
             <p
               onClick={()=>navigate("/")}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
+              className="w-9 h-9 flex cursor-pointer items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition"
             >
               <FontAwesomeIcon icon={faLinkedinIn} />
             </p>
