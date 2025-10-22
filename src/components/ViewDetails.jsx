@@ -87,7 +87,7 @@ const ViewDetails = () => {
                 <button
                   key={s}
                   onClick={() => setSize(s)}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                  className={`px-4 cursor-pointer py-2 rounded-lg font-semibold transition-all duration-300 ${
                     size === s
                       ? "bg-green-600 text-white shadow-lg scale-105"
                       : "bg-gray-200 text-gray-800 hover:bg-green-100"
@@ -103,21 +103,21 @@ const ViewDetails = () => {
           <div className="flex items-center gap-4 mt-6">
             <button
               onClick={handleDecrease}
-              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
+              className="bg-gray-300 cursor-pointer px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
             >
               −
             </button>
             <span className="text-lg font-semibold">{quantity}</span>
             <button
               onClick={handleIncrease}
-              className="bg-gray-300 px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
+              className="bg-gray-300 cursor-pointer px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
             >
               +
             </button>
 
             <button
               onClick={handleAddToCart}
-              className="ml-6 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition-transform hover:scale-105"
+              className="ml-6 bg-gradient-to-r cursor-pointer from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition-transform hover:scale-105"
             >
               Add to Cart
             </button>

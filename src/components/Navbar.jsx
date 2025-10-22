@@ -175,7 +175,7 @@ const Navbar = () => {
               logoutBtn();
               setMenuOpen(false);
             }}
-            className="bg-red-600 text-white px-8 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
+            className="bg-red-600 cursor-pointer text-white px-8 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
           >
             Logout
           </button>

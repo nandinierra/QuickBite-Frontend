@@ -7,6 +7,8 @@ import Cookies from "js-cookie";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+
+
 const PopularDishes = () => {
   const navigate = useNavigate();
   const token = Cookies.get("jwt_token");
@@ -182,3 +184,5 @@ const settings = {
 };
 
 export default PopularDishes;
+
+

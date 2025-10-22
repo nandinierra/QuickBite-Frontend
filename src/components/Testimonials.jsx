@@ -106,12 +106,12 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="mt-24 py-16 px-6 bg-white">
+    <section className="mt-24 mb-24 py-16 px-6 bg-white">
       <h2 className="text-3xl font-bold mb-10 text-center">
         <span className="text-yellow-500">⭐</span> Customer Reviews
       </h2>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mb-24 mx-auto">
         {/* ensure slider doesn't overflow on small devices */}
         <div className="overflow-hidden">
           {/* render slider only after mount and give it a key based on width so react-slick re-inits for the current viewport */}
