@@ -11,7 +11,6 @@ const Home = () => {
   const popularRef = useRef(null);
   const location = useLocation();
 
-  // ✅ Handle navbar scroll events
   useEffect(() => {
     const handleScrollEvent = (e) => {
       if (e.detail === "categories") {
@@ -30,7 +29,7 @@ const Home = () => {
     return () => window.removeEventListener("scrollToSection", handleScrollEvent);
   }, []);
 
-  // ✅ Handle navigation from another page
+  
   useEffect(() => {
     if (location.state?.scrollTo === "categories") {
       window.scrollTo({
@@ -48,8 +47,9 @@ const Home = () => {
   }, [location]);
 
   return (
+    
     <div className="overflow-x-hidden">
-      {/* HERO SECTION */}
+    
       <div className="relative w-full h-screen">
         <img
           className="w-full h-full object-cover"
@@ -57,7 +57,7 @@ const Home = () => {
           alt="Food banner"
         />
 
-        {/* Gradient Overlay */}
+        
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/30 to-black/60 flex flex-col justify-center items-start px-6 sm:px-10 md:px-20 lg:px-28">
           <div className="max-w-3xl text-left space-y-6">
             <h1
@@ -120,6 +120,7 @@ const Home = () => {
         <Testimonials />
       </section>
     </div>
+    
   );
 };
 

@@ -1,87 +1,16 @@
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { useState } from "react";
+// import Cookies from "js-cookie";
+import {useCart} from "../context/context";
+
 
 const Cart = () => {
-  const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [orderPlaced, setOrderPlaced] = useState(false); // show celebration card
-  const token = Cookies.get("jwt_token");
-
-
-  
-  const fetchCartItems = async () => {
-    try {
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/getItems", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-           Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) setCart(data);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCartItems();
-  }, []);
-
-  const updateQuantity = async (itemId, action) => {
-    try {
-      const response = await fetch(
-        `https://quickbite-backendd.onrender.com/cart/update/${itemId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ action }),
-        }
-      );
-      if (response.ok) fetchCartItems();
-    } catch (error) {
-      console.error("Error updating cart:", error);
-    }
-  };
-
-  const handleDelete = async (itemId) => {
-    try {
-      const response = await fetch(
-        `https://quickbite-backendd.onrender.com/cart/deleteItem/${itemId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) fetchCartItems();
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
-  };
-
-  const handleClearCart = async () => {
-    try {
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/clear", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) setCart({ foodItems: [] });
-    } catch (error) {
-      console.error("Error clearing cart:", error);
-    }
-  };
+   const [orderPlaced, setOrderPlaced] = useState(false);
+   const {
+    cart,
+    loading,
+    updateQuantity,
+    handleDelete,
+    handleClearCart} = useCart();
 
   const handleOrderNow = () => {
     setOrderPlaced(true); // show celebration card
@@ -233,7 +162,10 @@ const Cart = () => {
 
 
     </div>
-  );
+  ); 
+
 };
 
 export default Cart;
+
+

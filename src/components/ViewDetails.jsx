@@ -27,10 +27,12 @@ const ViewDetails = () => {
     getItem();
   }, [id]);
 
+
   const handleIncrease = () => setQuantity((prev) => prev + 1);
   const handleDecrease = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
+  
   const handleAddToCart = () => {
     const postItem = async () => {
       const options = {

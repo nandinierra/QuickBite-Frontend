@@ -14,6 +14,7 @@ import Cart from "./components/Cart.jsx"
 import Aboutus from "./components/Aboutus.jsx"
 import ContactUs from "./components/Contactus.jsx"
 import PageNotFound from "./components/Pagenotfound.jsx"
+import { CartProvider } from "./context/context.jsx";
 
 const App = () => { 
   const location=useLocation(); 
@@ -22,6 +23,7 @@ const App = () => {
 
 
   return (
+    <CartProvider>
     <div className="flex flex-col justify-between min-h-screen">
       {!hiddenpath&&<Navbar/>}
       <Routes>
@@ -37,6 +39,7 @@ const App = () => {
       </Routes>
        {!hiddenpath&&<Footer/>}
     </div>
+    </CartProvider>
   )
 }
 

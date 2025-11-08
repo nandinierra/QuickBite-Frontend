@@ -1,8 +1,12 @@
+
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useLocation } from "react-router-dom";
 import { faShoppingCart, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import {useCart} from "../context/context";
+
 
 const Navbar = () => {
   const location = useLocation();
@@ -10,6 +14,7 @@ const Navbar = () => {
   const [navbarBg, setNavbarBg] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cartLength } = useCart();
 
   const handleScroll = () => {
     if (location.pathname === "/") {
@@ -112,26 +117,36 @@ const Navbar = () => {
 
       {/* Right Side (Cart + Logout) */}
       <div className="flex items-center space-x-4">
-        <FontAwesomeIcon
-          onClick={() => navigate("/cart")}
-          className="text-2xl text-white hover:text-red-400 cursor-pointer transition-colors duration-300"
-          icon={faShoppingCart}
-        />
-        <button
-          onClick={logoutBtn}
-          className="hidden md:block cursor-pointer bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
-        >
-          Logout
-        </button>
 
-        {/* Mobile Menu Button */}
-        <div
-          className="md:hidden text-white text-2xl cursor-pointer"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
-        </div>
+  {/* Cart Icon Wrapper */}
+  <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+    <FontAwesomeIcon
+      className="text-2xl text-white hover:text-red-400 transition-colors duration-300"
+      icon={faShoppingCart}
+    />
+
+      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+        {cartLength}
+      </span>
+    
+  </div>
+
+  <button
+    onClick={logoutBtn}
+    className="hidden md:block cursor-pointer bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
+  >
+    Logout
+  </button>
+
+  <div
+    className="md:hidden text-white text-2xl cursor-pointer"
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+  </div>
+
       </div>
+
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
