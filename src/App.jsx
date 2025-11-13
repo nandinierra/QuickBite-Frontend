@@ -15,6 +15,9 @@ import Aboutus from "./components/Aboutus.jsx"
 import ContactUs from "./components/Contactus.jsx"
 import PageNotFound from "./components/Pagenotfound.jsx"
 import { CartProvider } from "./context/context.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const App = () => { 
   const location=useLocation(); 
@@ -39,6 +42,7 @@ const App = () => {
       </Routes>
        {!hiddenpath&&<Footer/>}
     </div>
+    <ToastContainer/>
     </CartProvider>
   )
 }

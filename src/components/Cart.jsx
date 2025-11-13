@@ -1,7 +1,8 @@
 import { useState } from "react";
-// import Cookies from "js-cookie";
-import {useCart} from "../context/context";
 
+//import Cookies from "js-cookie";
+import {useCart} from "../context/context";
+// import Navbar from "./Navbar";
 
 const Cart = () => {
    const [orderPlaced, setOrderPlaced] = useState(false);
@@ -11,12 +12,16 @@ const Cart = () => {
     updateQuantity,
     handleDelete,
     handleClearCart} = useCart();
+   
+
+  
 
   const handleOrderNow = () => {
     setOrderPlaced(true); // show celebration card
     handleClearCart(); // clear cart after ordering
   };
-
+  console.log("FoodItems", cart.data.foodItems)
+   
   if (loading)
     return   <div className="flex flex-col justify-center items-center h-[70vh] space-y-4">
       <div className="flex gap-3 text-4xl animate-bounce">
@@ -29,7 +34,7 @@ const Cart = () => {
       </p>
     </div>
 
-  if (!cart || !cart.foodItems || cart.foodItems.length === 0)
+  if (!cart || !cart.data || !cart.data.foodItems || cart.data.foodItems.length === 0)
     return (
       <div className="flex flex-col justify-center items-center h-[70vh] text-gray-600">
         <div className="text-center">
@@ -58,7 +63,7 @@ const Cart = () => {
       </div>
     );
 
-  const total = cart.foodItems.reduce((acc, item) => {
+  const total = cart.data.foodItems.reduce((acc, item) => {
     const price =
       item.itemId?.price?.[item.size?.toLowerCase()] ||
       item.itemId?.price?.regular ||
@@ -91,7 +96,7 @@ const Cart = () => {
       )}
 
       <div className="space-y-6">
-        {cart.foodItems.map((item) => (
+        {cart.data.foodItems.map((item) => (
           <div
             key={item._id}
             className="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300"

@@ -1,18 +1,19 @@
 
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Cookies from "js-cookie";
 import ClipLoader from "react-spinners/ClipLoader"
+import { useCart } from "../context/context";
+import {toast} from "react-toastify"
+
 
 const ViewDetails = () => {
-  const navigate = useNavigate();
+  const {addItemToCart}= useCart();
+ 
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("Regular");
-  const token = Cookies.get("jwt_token");
-
+  
   useEffect(() => {
     const getItem = async () => {
       try {
@@ -33,22 +34,41 @@ const ViewDetails = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   
-  const handleAddToCart = () => {
-    const postItem = async () => {
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ itemId: id, quantity, size }),
-      };
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", options);
-      const data = await response.json();
-      console.log(data);
-      navigate("/cart");
-    };
-    postItem();
+  const handleAddToCart = async () => {
+        try{
+        const itemData = { itemId: id, quantity, size };
+        const result=await addItemToCart(itemData);
+      
+       if (result.success) {
+             if (result.isNewItem) {
+            toast.success(`Item successfully added to cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+          } else {
+          toast.info(`Quantity updated in cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+          }
+         } 
+         else {
+          toast.error("Failed to update cart", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+        }
+
+      }
+      catch(error){
+        console.log("Error adding to cart:", error);
+        toast.error("Failed to add item to cart", {
+        position: "top-right",
+        autoClose: 1500,
+        });
+      }
+    
+
   };
 
   if (!item) return <div className=' mt-45 flex justify-center items-center'><ClipLoader color="#fb2c36"/></div>;

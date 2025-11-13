@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useParams, Link } from "react-router-dom";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Cookies from "js-cookie";
+
 import AOS from "aos";
 import "aos/dist/aos.css";
-import {useNavigate} from "react-router-dom"
 import ClipLoader from "react-spinners/ClipLoader"
-
+import {toast} from "react-toastify"
+import {useCart} from "../context/context";
 
 const Fooddetails = () => {
-  const navigate=useNavigate("")
-  const token = Cookies.get("jwt_token");
+ 
+  const { addItemToCart } = useCart(); 
   const { category } = useParams();
 
   const [pizzas, setPizzas] = useState([]);
@@ -22,7 +22,7 @@ const Fooddetails = () => {
   const [selectedType, setSelectedType] = useState(typefromurl);
   const [searchTerm, setSearchTerm] = useState("");
   const [size, setSize] = useState("Regular");
-  const [quantity, setQuantity] = useState(1);
+ 
 
   // Initialize AOS animations
   useEffect(() => {
@@ -55,22 +55,38 @@ const Fooddetails = () => {
     setSearchParams({ type: e.target.value });
   };
 
+
   const addToCart = async (id) => {
-    try {
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ itemId: id, quantity, size }),
-      };
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", options);
-      const data = await response.json();
-      console.log(data);
-      navigate("/cart")
+    try { 
+      const itemData = { itemId: id, quantity:1, size };
+      const result = await addItemToCart(itemData);
+
+      if (result.success) {
+        if (result.isNewItem) {
+       
+          toast.success(`Item successfully added to cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+        } else {
+          toast.info(`Quantity updated in cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+        }
+      } else {
+        toast.error("Failed to update cart", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+      }
+
     } catch (err) {
       console.log("Error adding to cart:", err);
+      toast.error("Failed to add item to cart", {
+        position: "top-right",
+        autoClose: 1500,
+      });
     }
   };
 

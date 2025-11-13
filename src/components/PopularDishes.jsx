@@ -1,17 +1,15 @@
 
 
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Slider from "react-slick";
-import Cookies from "js-cookie";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { useCart } from "../context/context";
+import {toast} from "react-toastify"
 
 
 const PopularDishes = () => {
-  const navigate = useNavigate();
-  const token = Cookies.get("jwt_token");
+  const {addItemToCart} = useCart();
   const [popularDishes, setPopularDishes] = useState([]);
 
   useEffect(() => {
@@ -27,30 +25,45 @@ const PopularDishes = () => {
     getPopularDishes();
   }, []);
 
-  const handleAddToCart = (dish) => {
-    const postItem = async () => {
+
+  const handleAddToCart = async (dish) => {
+   
       try {
-        const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            itemId: dish._id,
-            quantity: 1,
-            size: dish.price.regular,
-          }),
+        const itemData = {  itemId: dish._id, quantity: 1, size: dish.price.regular };
+        const result=  await addItemToCart(itemData);
+
+        if (result.success) {
+             if (result.isNewItem) {
+            toast.success(`Item successfully added to cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+          } else {
+          toast.info(`Quantity updated in cart!`, {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+          }
+        } 
+         else {
+          toast.error("Failed to update cart", {
+          position: "top-right",
+          autoClose: 1500,
         });
-        const data = await response.json();
-        console.log(data);
-        navigate("/cart");
+        }
+   
       } catch (err) {
-        console.error("Add to cart error:", err);
+        console.log("Error adding to cart:", err);
+        toast.error("Failed to add item to cart", {
+        position: "top-right",
+        autoClose: 1500,
+        });
       }
-    };
-    postItem();
+    
+ 
   };
+
+
 
   const StarIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
