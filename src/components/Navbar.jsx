@@ -64,12 +64,12 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex fixed top-0 left-0 w-full justify-between items-center z-20 px-6 md:px-16 py-3 transition-all duration-300 ${
+      className={`flex fixed top-0 left-0 w-full justify-between items-center z-20 px-4 sm:px-6 md:px-16 py-2 sm:py-3 transition-all duration-300 ${
         navbarBg
-          ? "bg-black/90 backdrop-blur-sm"
+          ? "bg-black/95 backdrop-blur-md border-b border-red-600/20"
           : location.pathname === "/"
-          ? "bg-black/40"
-          : "bg-black/90"
+          ? "bg-black/40 backdrop-blur-sm"
+          : "bg-black/95 backdrop-blur-md"
       }`}
     >
       {/* Logo */}
@@ -78,13 +78,13 @@ const Navbar = () => {
           navigate("/", { replace: true });
           setMenuOpen(false);
         }}
-        className="h-[45px] w-[45px] rounded-full cursor-pointer"
+        className="h-10 sm:h-12 w-10 sm:w-12 rounded-full cursor-pointer hover:scale-110 transition-transform duration-300"
         src="https://res.cloudinary.com/doicvqkvb/image/upload/v1756198168/QuickBite_qxnvys.png"
         alt="QuickBite Logo"
       />
 
       {/* Desktop Menu */}
-      <div className="hidden md:flex items-center space-x-8">
+      <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
         {location.pathname === "/" && (
           <>
             <p
@@ -124,15 +124,18 @@ const Navbar = () => {
       </div>
 
       {/* Right Side (Cart + Logout) */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center gap-3 sm:gap-4">
 
   {user && user.role === "customer" && (
-    <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+    <div 
+      className="relative cursor-pointer group"
+      onClick={() => navigate("/cart")}
+    >
       <FontAwesomeIcon
-        className="text-2xl text-white hover:text-red-400 transition-colors duration-300"
+        className="text-xl sm:text-2xl text-white hover:text-red-400 transition-colors duration-300 group-hover:scale-110 transform"
         icon={faShoppingCart}
       />
-      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full hover:bg-red-700">
         {cartLength}
       </span>
     </div>
@@ -140,13 +143,13 @@ const Navbar = () => {
 
   <button
     onClick={logoutBtn}
-    className="hidden md:block cursor-pointer bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
+    className="hidden md:block cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
   >
     Logout
   </button>
 
   <div
-    className="md:hidden text-white text-2xl cursor-pointer"
+    className="md:hidden text-white text-xl sm:text-2xl cursor-pointer hover:text-red-400 transition-colors"
     onClick={() => setMenuOpen(!menuOpen)}
   >
     <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
@@ -157,7 +160,7 @@ const Navbar = () => {
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="absolute top-[65px] left-0 w-full bg-black/95 backdrop-blur-sm flex flex-col items-center py-6 space-y-6 md:hidden z-10">
+        <div className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-md flex flex-col items-center py-4 sm:py-6 space-y-4 sm:space-y-6 md:hidden border-t border-red-600/20">
           {location.pathname === "/" && (
             <>
               <p
@@ -209,7 +212,7 @@ const Navbar = () => {
               logoutBtn();
               setMenuOpen(false);
             }}
-            className="bg-red-600 cursor-pointer text-white px-8 py-2 rounded-full hover:bg-red-700 transition-all duration-300"
+            className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 cursor-pointer text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:shadow-lg transform hover:scale-105 w-full max-w-xs"
           >
             Logout
           </button>

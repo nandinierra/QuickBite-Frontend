@@ -71,18 +71,18 @@ const Cart = () => {
 
 
   return (
-    <div className="max-w-5xl mx-auto mb-12 mt-20 p-6 bg-gray-50 rounded-2xl shadow-lg">
-      <h1 className="text-4xl font-bold mb-4 text-center text-red-600">Your Cart 🛒</h1>
+    <div className="max-w-6xl mx-auto mb-12 mt-20 p-4 sm:p-6 md:p-8 bg-gray-50 rounded-2xl shadow-lg">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center text-red-600">Your Cart 🛒</h1>
 
       {orderPlaced && (
-        <div className="mb-8 relative w-full bg-white rounded-2xl shadow-2xl p-8 text-center animate-scaleIn">
-          <h1 className="text-4xl font-bold text-green-600 mb-4">
+        <div className="mb-8 relative w-full bg-white rounded-2xl shadow-2xl p-6 sm:p-8 text-center animate-scaleIn">
+          <h1 className="text-3xl sm:text-4xl font-bold text-green-600 mb-4">
             🎉 Order Placed Successfully! 🎉
           </h1>
           <p className="text-gray-700 mb-4">
             Thank you for your order! Your delicious food is on its way.
           </p>
-          <div className="flex justify-center gap-2 text-5xl animate-bounce">
+          <div className="flex justify-center gap-2 sm:gap-4 text-4xl sm:text-5xl animate-bounce">
             <span>🎉</span>
             <span>🍕</span>
             <span>🍔</span>
@@ -92,48 +92,48 @@ const Cart = () => {
         </div>
       )}
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {cart.data.foodItems.map((item) => (
           <div
-            key={item._id}
-            className="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300"
+            key={item.itemId._id}
+            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-red-600"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:flex-1">
               <img
                 src={item.itemId?.image}
                 alt={item.itemId?.name}
-                className="w-28 h-28 object-cover rounded-lg shadow-md"
+                className="w-20 h-20 sm:w-28 sm:h-28 object-cover rounded-lg shadow-md flex-shrink-0"
               />
-              <div>
-                <h2 className="font-semibold text-xl text-gray-800">
+              <div className="flex-1">
+                <h2 className="font-semibold text-lg sm:text-xl text-gray-800">
                   {item.itemId?.name}
                 </h2>
-                <p className="text-gray-500 mt-1">Size: {item.size}</p>
-                <p className="text-red-600 font-bold mt-1">
-                  ₹
-                  {item.itemId?.price?.[item.size?.toLowerCase()] ||
-                    item.itemId?.price?.regular}
+                <p className="text-gray-600 text-sm mt-1">Size: <span className="font-medium">{item.size}</span></p>
+                <p className="text-red-600 font-bold mt-2 text-lg">
+                  ₹{item.itemId?.price?.[item.size?.toLowerCase()] || item.itemId?.price?.regular}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mt-4 md:mt-0">
-              <button
-                onClick={() => updateQuantity(item.itemId._id, "decrease")}
-                className="bg-gray-200 cursor-pointer hover:bg-gray-300 px-4 py-1 rounded-lg font-bold transition"
-              >
-                −
-              </button>
-              <span className="font-semibold text-lg">{item.quantity}</span>
-              <button
-                onClick={() => updateQuantity(item.itemId._id, "increase")}
-                className="bg-gray-200 cursor-pointer hover:bg-gray-300 px-4 py-1 rounded-lg font-bold transition"
-              >
-                +
-              </button>
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1 sm:p-2 flex-1 sm:flex-none">
+                <button
+                  onClick={() => updateQuantity(item.itemId._id, "decrease")}
+                  className="bg-gray-300 cursor-pointer hover:bg-gray-400 px-3 py-1 sm:px-4 sm:py-2 rounded font-bold transition-all hover:scale-110"
+                >
+                  −
+                </button>
+                <span className="font-semibold text-base sm:text-lg min-w-[30px] text-center">{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.itemId._id, "increase")}
+                  className="bg-gray-300 cursor-pointer hover:bg-gray-400 px-3 py-1 sm:px-4 sm:py-2 rounded font-bold transition-all hover:scale-110"
+                >
+                  +
+                </button>
+              </div>
               <button
                 onClick={() => handleDelete(item.itemId._id)}
-                className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-1 rounded-lg transition"
+                className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-sm sm:text-base font-semibold transition-all"
               >
                 Remove
               </button>
@@ -142,26 +142,25 @@ const Cart = () => {
         ))}
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center mt-10 bg-white p-5 rounded-xl shadow-md">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mt-10 bg-white p-4 sm:p-6 rounded-xl shadow-md border-t-4 border-red-600">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
           Total: <span className="text-red-600">₹{total}</span>
         </h2>
-        <div className="flex gap-4 mt-4 md:mt-0">
+        <div className="flex gap-3 sm:gap-4 w-full sm:w-auto">
           <button
             onClick={handleClearCart}
-            className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition"
+            className="flex-1 sm:flex-none bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all hover:shadow-lg"
           >
             Clear Cart
           </button>
           <button
             onClick={handleOrderNow}
-            className="bg-green-600 cursor-pointer hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition"
+            className="flex-1 sm:flex-none bg-green-600 cursor-pointer hover:bg-green-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all hover:shadow-lg"
           >
             Order Now
           </button>
         </div>
       </div> 
-
 
     </div>
   ); 

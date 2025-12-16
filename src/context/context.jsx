@@ -63,12 +63,21 @@ export const CartProvider = ({ children }) => {
       });
 
       const result = await response.json();
-      console.log("fatchedData",result)
+      console.log("Cart fetched from backend:", result);
+      console.log("Cart items count:", result?.data?.foodItems?.length || 0);
+      
       if (response.ok) {
+        // Backend returns { data, length }, dispatch expects the full response
         dispatch({ type: "SET_CART", payload: result });  
+      } else {
+        console.error("Failed to fetch cart:", result.message);
+        // If cart fetch fails, initialize with empty cart
+        dispatch({ type: "SET_CART", payload: { data: { foodItems: [] }, length: 0 } });
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
+      // On error, initialize with empty cart
+      dispatch({ type: "SET_CART", payload: { data: { foodItems: [] }, length: 0 } });
     }
   }, [token]);
 

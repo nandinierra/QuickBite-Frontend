@@ -106,43 +106,55 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="mt-24 mb-24 py-16 px-6 bg-white">
-      <h2 className="text-3xl font-bold mb-10 text-center">
-        <span className="text-yellow-500">⭐</span> Customer Reviews
-      </h2>
+    <section className="mt-24 mb-24 py-16 sm:py-20 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-white to-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <span className="text-red-600">⭐</span> What Our Customers Say
+          </h2>
+          <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+            Real experiences from food lovers who trust QuickBite
+          </p>
+        </div>
 
-      <div className="max-w-7xl mb-24 mx-auto">
-        {/* ensure slider doesn't overflow on small devices */}
+        {/* Testimonials Carousel */}
         <div className="overflow-hidden">
-          {/* render slider only after mount and give it a key based on width so react-slick re-inits for the current viewport */}
           {mounted && (
             <Slider key={width} ref={sliderRef} {...settings}>
               {reviews.map((review) => (
-                <div key={review.id} className="px-4 min-w-0">
-                  <div
-                    className="bg-gradient-to-br sm:ml-4 md:ml-0
-               from-white to-red-50 rounded-3xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-2xl transition-all"
-                  >
-                    <img
-                      src={review.photo}
-                      alt={review.name}
-                      className="w-20 h-20 rounded-full mx-auto mb-4 border-4 border-red-500 shadow-sm"
-                    />
-                    <div className="flex justify-center mb-3">
+                <div key={review.id} className="px-3 sm:px-4 min-w-0">
+                  <div className="bg-gradient-to-br from-white to-red-50 rounded-3xl shadow-lg p-6 sm:p-8 text-center border-2 border-gray-100 hover:border-red-600 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+                    
+                    {/* Avatar */}
+                    <div className="relative mb-6">
+                      <img
+                        src={review.photo}
+                        alt={review.name}
+                        className="w-20 h-20 rounded-full mx-auto border-4 border-red-600 shadow-lg"
+                      />
+                      <div className="absolute inset-0 rounded-full border-4 border-red-600 opacity-0 group-hover:opacity-20 animate-pulse"></div>
+                    </div>
+
+                    {/* Rating */}
+                    <div className="flex justify-center gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <FontAwesomeIcon
                           key={i}
                           icon={faStar}
-                          className={`h-5 w-5 ${
-                            i < review.rating ? "text-yellow-400" : "text-gray-300"
+                          className={`h-5 w-5 transition-all ${
+                            i < review.rating ? "text-red-600" : "text-gray-300"
                           }`}
                         />
                       ))}
                     </div>
-                    <p className="text-gray-700 italic mb-4 leading-relaxed">
-                      “{review.comment}”
+
+                    {/* Comment */}
+                    <p className="text-gray-700 italic mb-6 leading-relaxed text-sm sm:text-base flex-grow">
+                      "{review.comment}"
                     </p>
-                    <p className="font-semibold text-red-600">{review.name}</p>
+
+                    {/* Name */}
+                    <p className="font-semibold text-lg text-red-600">{review.name}</p>
                   </div>
                 </div>
               ))}

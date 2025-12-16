@@ -61,71 +61,69 @@ const Login = () => {
   }
 
   return (
-    <div className="relative font-Inter bg-[url('https://i.pinimg.com/1200x/27/19/61/271961e178db1f2696ced7d0af38b4e3.jpg')] bg-cover bg-center min-h-screen flex items-center justify-center md:justify-end text-white px-4 sm:px-6 lg:px-8">
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60"></div>
+    <div className="relative font-Inter bg-[url('https://i.pinimg.com/1200x/27/19/61/271961e178db1f2696ced7d0af38b4e3.jpg')] bg-cover bg-center min-h-screen flex items-center justify-center md:justify-end text-white px-4 sm:px-6 lg:px-12">
+      <div className="absolute inset-0 bg-black/70"></div>
 
       <form
         onSubmit={submitLoginForm}
-        className="relative z-10 md:mr-26 bg-black/70 rounded-xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-[400px] flex flex-col text-white"
+        className="relative z-10 md:mr-16 lg:mr-32 bg-black/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-[420px] flex flex-col text-white border border-red-600/20 transform transition-all duration-300 hover:shadow-2xl hover:border-red-600/40 hover:-translate-y-1"
       >
-        {/* Title */}
-        <div className="flex justify-center mb-6">
-          <h1 className="text-3xl sm:text-4xl font-bold text-center">Login</h1>
+        <div className="flex justify-center mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
+            Welcome Back
+          </h1>
         </div>
 
-       
-        <div className="flex flex-col mb-4">
-          <label htmlFor="email" className="mb-2 text-sm sm:text-base">
-            EMAIL
+        <div className="flex flex-col mb-5">
+          <label htmlFor="email" className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-300">
+            Email Address
           </label>
           <input
             value={email}
             onChange={(event) => setMail(event.target.value)}
             id="email"
             type="email"
-            placeholder="Enter your email"
-            className="bg-[#333333] p-2 sm:p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="you@example.com"
+            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
           />
         </div>
 
-        <div className="flex flex-col mb-6">
-          <label htmlFor="password" className="mb-2 text-sm sm:text-base">
-            PASSWORD
+        <div className="flex flex-col mb-8">
+          <label htmlFor="password" className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-300">
+            Password
           </label>
           <input
             value={password}
             type="password"
             onChange={(event) => setPassword(event.target.value)}
             id="password"
-            placeholder="Enter your password"
-            className="bg-[#333333] p-2 sm:p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="••••••••"
+            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
           />
         </div>
 
-        {/* {errorMsg && (
-          <p className="text-red-500 text-center text-sm mb-3">{errorMsg}</p>
-        )} */}
         {showErrorMsg && (
-          <p className="text-red-500 text-center text-sm mb-3">{errorMsg}</p>
+          <p className="text-red-400 text-center text-sm mb-4 bg-red-900/20 p-3 rounded-lg border border-red-600/30">
+            {errorMsg}
+          </p>
         )}
-
 
         <button
           type="submit"
-          className="bg-gradient-to-r cursor-pointer from-red-700 to-orange-600 py-2 sm:py-3 rounded-lg font-semibold text-white text-sm sm:text-base hover:scale-105 hover:shadow-lg transition-transform duration-300"
+          className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 cursor-pointer py-3 sm:py-4 rounded-lg font-semibold text-white text-sm sm:text-base shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 transform"
         >
-          Login
+          Sign In
         </button>
-        <p className="text-center text-sm sm:text-base mt-4 text-gray-300">
-  Don’t have an account?{" "}
-  <span
-    onClick={() => navigate("/signup")}
-    className="text-red-400 hover:text-red-500 cursor-pointer font-semibold"
-  >
-    Sign up
-  </span>
-</p>
+
+        <p className="text-center text-sm sm:text-base mt-6 text-gray-400">
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/signup")}
+            className="text-red-400 hover:text-red-300 cursor-pointer font-semibold transition-colors"
+          >
+            Create one
+          </span>
+        </p>
       </form>
     </div>
   );

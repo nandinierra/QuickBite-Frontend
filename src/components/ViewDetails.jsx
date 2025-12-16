@@ -73,86 +73,81 @@ const ViewDetails = () => {
 
   };
 
-  if (!item) return <div className=' mt-45 flex justify-center items-center'><ClipLoader color="#fb2c36"/></div>;
-
-
+  if (!item) return <div className='mt-32 flex justify-center items-center min-h-[60vh]'><ClipLoader color="#dc2626"/></div>;
 
   return (
-    <div className=" h-[90%] flex flex-col justify-center">
-    <div className="mx-auto  mt-20">
+    <div className="flex flex-col justify-center min-h-screen pt-20 pb-12">
+      <div className="mx-auto w-full px-4 sm:px-6 md:px-8 max-w-7xl">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-12 bg-white rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300 hover:shadow-3xl">
+          
+          {/* Image Section */}
+          <div className="w-full lg:w-1/2 relative group overflow-hidden">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-64 sm:h-80 lg:h-96 object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <span className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors">
+              {item.type}
+            </span>
+          </div>
 
-      <div className="flex flex-col lg:h-[440px] md:w-[80%] lg:w-[100%] m-auto mb-4 lg:flex-row gap-10 bg-white rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300">
-       
+          {/* Details Section */}
+          <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-8">
+            
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 text-gray-800">{item.name}</h2>
+              <p className="text-gray-600 mb-2"><strong>Category:</strong> {item.category}</p>
+              <p className="text-gray-600 mb-4"><strong>Type:</strong> {item.type}</p>
+              <p className="text-gray-700 mb-6 leading-relaxed">{item.description}</p>
 
-        <div className="md:w-full lg:h-[440px] relative group">
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-full h-full object-cover rounded-l-3xl transition-transform duration-500 group-hover:scale-105"
-          />
-          <span className="absolute top-4 right-4 bg-yellow-400 text-white px-3 py-1 rounded-full font-bold shadow-lg">
-            {item.type}
-          </span>
-        </div>
+              {/* Size Selection */}
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Choose Size:</h3>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {["Regular", "Medium", "Large"].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSize(s)}
+                    className={`px-4 sm:px-5 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 transform ${
+                      size === s
+                        ? "bg-red-600 text-white shadow-lg scale-105"
+                        : "bg-gray-200 text-gray-800 hover:bg-red-100 hover:text-red-700"
+                    }`}
+                  >
+                    {s}: ₹{item.price[s.toLowerCase()]}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-
-        <div className="md:w-full lg:h-[407px]  flex flex-col justify-between p-6">
-
-          <div>
-            <h2 className="text-4xl font-extrabold mb-3 text-gray-800">{item.name}</h2>
-            <p className="text-gray-500 mb-1"><strong>Category:</strong> {item.category}</p>
-            <p className="text-gray-500 mb-3"><strong>Type:</strong> {item.type}</p>
-            <p className="text-gray-700 mb-4">{item.description}</p>
-
-            {/* Price Selection */}
-            <h3 className="text-xl font-semibold mb-2">Choose Size:</h3>
-            <div className="flex gap-4 mb-4">
-              {["Regular", "Medium", "Large"].map((s) => (
+            {/* Quantity and Add to Cart */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-8">
+              <div className="flex items-center gap-3 bg-gray-100 rounded-lg p-2">
                 <button
-                  key={s}
-                  onClick={() => setSize(s)}
-                  className={`px-4 cursor-pointer py-2 rounded-lg font-semibold transition-all duration-300 ${
-                    size === s
-                      ? "bg-green-600 text-white shadow-lg scale-105"
-                      : "bg-gray-200 text-gray-800 hover:bg-green-100"
-                  }`}
+                  onClick={handleDecrease}
+                  className="bg-gray-300 cursor-pointer px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-lg sm:text-xl font-bold transition-all hover:bg-gray-400 hover:scale-110"
                 >
-                  {s}: ₹{item.price[s.toLowerCase()]}
+                  −
                 </button>
-              ))}
+                <span className="text-lg sm:text-xl font-semibold min-w-[40px] text-center">{quantity}</span>
+                <button
+                  onClick={handleIncrease}
+                  className="bg-gray-300 cursor-pointer px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-lg sm:text-xl font-bold transition-all hover:bg-gray-400 hover:scale-110"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 sm:flex-auto bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
-
-         
-          <div className="flex items-center gap-4 mt-6">
-            <button
-              onClick={handleDecrease}
-              className="bg-gray-300 cursor-pointer px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
-            >
-              −
-            </button>
-            <span className="text-lg font-semibold">{quantity}</span>
-            <button
-              onClick={handleIncrease}
-              className="bg-gray-300 cursor-pointer px-3 py-1 rounded-lg text-xl font-bold transition-transform hover:scale-110"
-            >
-              +
-            </button>
-
-            <button
-              onClick={handleAddToCart}
-              className="ml-6 bg-gradient-to-r cursor-pointer from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition-transform hover:scale-105"
-            >
-              Add to Cart
-            </button>
-          </div>
-
-        </div> 
-
-
+        </div>
       </div>
-      
-    </div>
     </div>
   );
 };
