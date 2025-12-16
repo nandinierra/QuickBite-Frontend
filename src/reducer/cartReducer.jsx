@@ -21,7 +21,9 @@ export function cartReducer(state, action) {
   console.log("action", action)
   switch (action.type) {
     case "SET_CART": {
-      const newLength = action.payload?.data?.foodItems?.length || 0;
+      // Filter out items with null itemId to prevent crashes
+      const validFoodItems = action.payload?.data?.foodItems?.filter(item => item?.itemId) || [];
+      const newLength = validFoodItems.length;
       try {
         localStorage.setItem("cartLength", newLength.toString());
       } catch {
@@ -29,7 +31,13 @@ export function cartReducer(state, action) {
       }
       return { 
         ...state, 
-        cart: action.payload, 
+        cart: { 
+          ...action.payload,
+          data: {
+            ...action.payload?.data,
+            foodItems: validFoodItems
+          }
+        }, 
         length: newLength, 
         loading: false 
       };
@@ -41,7 +49,7 @@ export function cartReducer(state, action) {
         data: {
           ...state.cart.data,
           foodItems: state.cart.data.foodItems.map(item =>
-            item.itemId._id === action.payload.itemId
+            item?.itemId?._id === action.payload.itemId
               ? { ...item, quantity: action.payload.quantity }
               : item
           ),
@@ -66,7 +74,7 @@ export function cartReducer(state, action) {
         data: {
           ...state.cart.data,
           foodItems: state.cart.data.foodItems.filter(
-            item => item.itemId._id !== action.payload
+            item => item?.itemId?._id !== action.payload
           ),
         },
       };

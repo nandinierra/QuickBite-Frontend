@@ -8,30 +8,43 @@ const Cart = () => {
     loading,
     updateQuantity,
     handleDelete,
-    handleClearCart} = useCart();
+    handleClearCart,
+    isLoading} = useCart();
    
 
   
 
   const handleOrderNow = () => {
+    if (!cart?.data?.foodItems || cart.data.foodItems.length === 0) {
+      return;
+    }
     setOrderPlaced(true); // show celebration card
     handleClearCart(); // clear cart after ordering
   };
-  console.log("FoodItems", cart.data.foodItems)
-   
-  if (loading)
-    return   <div className="flex flex-col justify-center items-center h-[70vh] space-y-4">
-      <div className="flex gap-3 text-4xl animate-bounce">
-        <span>🍕</span>
-        <span>🍔</span>
-        <span>🥤</span>
+  
+  console.log("Cart state:", { cart, loading, isLoading });
+  
+  // Show loading only during initial fetch or explicit loading state
+  if (loading || isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[70vh] space-y-4">
+        <div className="flex gap-3 text-4xl animate-bounce">
+          <span>🍕</span>
+          <span>🍔</span>
+          <span>🥤</span>
+        </div>
+        <p className="text-gray-500 text-lg font-medium animate-pulse">
+          Getting your cart ready...
+        </p>
       </div>
-      <p className="text-gray-500 text-lg font-medium animate-pulse">
-        Getting your cart ready...
-      </p>
-    </div>
+    );
+  }
 
-  if (!cart || !cart.data || !cart.data.foodItems || cart.data.foodItems.length === 0)
+  // Check if cart is empty
+  const cartItems = cart?.data?.foodItems || [];
+  const isEmpty = !cartItems || cartItems.length === 0;
+
+  if (isEmpty)
     return (
       <div className="flex flex-col justify-center items-center h-[70vh] text-gray-600">
         <div className="text-center">
@@ -60,7 +73,7 @@ const Cart = () => {
       </div>
     );
 
-  const total = cart.data.foodItems.reduce((acc, item) => {
+  const total = cartItems.filter(item => item.itemId).reduce((acc, item) => {
     const price =
       item.itemId?.price?.[item.size?.toLowerCase()] ||
       item.itemId?.price?.regular ||
@@ -93,9 +106,9 @@ const Cart = () => {
       )}
 
       <div className="space-y-4 sm:space-y-6">
-        {cart.data.foodItems.map((item) => (
+        {cartItems.filter(item => item.itemId).map((item) => (
           <div
-            key={item.itemId._id}
+            key={item.itemId?._id || Math.random()}
             className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-red-600"
           >
             <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:flex-1">

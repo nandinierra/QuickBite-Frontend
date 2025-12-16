@@ -11,7 +11,7 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { toast } from "react-toastify";
 import { useCart } from "../context/context";
 
-const BASE_URL =
+const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const Fooddetails = () => {
@@ -26,7 +26,7 @@ const Fooddetails = () => {
   const typefromurl = searchParams.get("type") || "All";
   const [selectedType, setSelectedType] = useState(typefromurl);
   const [searchTerm, setSearchTerm] = useState("");
-  const [size, setSize] = useState("Regular");
+  const [size, setSize] = useState("regular");
  
 
   
@@ -49,7 +49,7 @@ const Fooddetails = () => {
           throw new Error("Category is not defined");
         }
         
-        let url = `${BASE_URL}/foodItems/filter/${category}?type=${selectedType}`;
+        let url = `${BACKEND_URL}/foodItems/filter/${category}?type=${selectedType}`;
         if (searchTerm) url += `&search=${searchTerm}`;
         
         console.log("Fetching from URL:", url);
@@ -220,9 +220,9 @@ const Fooddetails = () => {
                       {[["Regular", pizza.price.regular], ["Medium", pizza.price.medium], ["Large", pizza.price.large]].map(([sizeLabel, price]) => (
                         <button
                           key={sizeLabel}
-                          onClick={() => setSize(sizeLabel)}
+                          onClick={() => setSize(sizeLabel.toLowerCase())}
                           className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold transition-all ${
-                            size === sizeLabel
+                            size === sizeLabel.toLowerCase()
                               ? "bg-red-600 text-white"
                               : "bg-gray-100 text-gray-700 hover:bg-red-100"
                           }`}

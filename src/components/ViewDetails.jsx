@@ -5,7 +5,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useCart } from "../context/context";
 import { toast } from "react-toastify";
 
-const BASE_URL =
+const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const ViewDetails = () => {
@@ -14,12 +14,12 @@ const ViewDetails = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState("Regular");
+  const [size, setSize] = useState("regular");
   
   useEffect(() => {
     const getItem = async () => {
       try {
-        const url = `${BASE_URL}/foodItems/getItemId/${id}`;
+        const url = `${BACKEND_URL}/foodItems/getItemId/${id}`;
         const response = await fetch(url);
         const data = await response.json();
         setItem(data.food);
@@ -107,9 +107,9 @@ const ViewDetails = () => {
                 {["Regular", "Medium", "Large"].map((s) => (
                   <button
                     key={s}
-                    onClick={() => setSize(s)}
+                    onClick={() => setSize(s.toLowerCase())}
                     className={`px-4 sm:px-5 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 transform ${
-                      size === s
+                      size === s.toLowerCase()
                         ? "bg-red-600 text-white shadow-lg scale-105"
                         : "bg-gray-200 text-gray-800 hover:bg-red-100 hover:text-red-700"
                     }`}
