@@ -14,6 +14,7 @@ import Cart from "./components/Cart.jsx"
 import Aboutus from "./components/Aboutus.jsx"
 import ContactUs from "./components/Contactus.jsx"
 import PageNotFound from "./components/Pagenotfound.jsx"
+import AdminDashboard from "./components/AdminDashboard.jsx"
 import { CartProvider } from "./context/context.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,6 +39,7 @@ const App = () => {
                 <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>}/>
                 <Route path="/aboutus" element={<ProtectedRoute><Aboutus /></ProtectedRoute>}/>
                 <Route path="/contactus" element={<ProtectedRoute><ContactUs /></ProtectedRoute>}/>
+                <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>}/>
                 <Route path="*" element={<PageNotFound />}/>
       </Routes>
        {!hiddenpath&&<Footer/>}

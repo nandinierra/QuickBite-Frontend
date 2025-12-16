@@ -8,8 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ClipLoader from "react-spinners/ClipLoader"
-import {toast} from "react-toastify"
-import {useCart} from "../context/context";
+import { toast } from "react-toastify";
+import { useCart } from "../context/context";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Fooddetails = () => {
  
@@ -24,7 +26,7 @@ const Fooddetails = () => {
   const [size, setSize] = useState("Regular");
  
 
-  // Initialize AOS animations
+  
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
@@ -38,7 +40,7 @@ const Fooddetails = () => {
   useEffect(() => {
     const details = async () => {
       try {
-        let url = `https://quickbite-backendd.onrender.com/foodItems/filter/${category}?type=${selectedType}`;
+        let url = `${BASE_URL}/foodItems/filter/${category}?type=${selectedType}`;
         if (searchTerm) url += `&search=${searchTerm}`;
         const response = await fetch(url);
         const data = await response.json();

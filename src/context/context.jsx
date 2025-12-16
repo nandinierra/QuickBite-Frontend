@@ -1,21 +1,59 @@
 import { createContext, useContext, useEffect, useReducer, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import { cartReducer, initialState } from "../reducer/cartReducer.jsx";
-import {toast} from "react-toastify"
-
+import { toast } from "react-toastify";
 
 const CartContext = createContext();
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 export const CartProvider = ({ children }) => {
  
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const [hasInitialized, setHasInitialized] = useState(false);
-  const token = Cookies.get("jwt_token");
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [tokenState, setTokenState] = useState(() => Cookies.get("jwt_token"));
+  const token = tokenState;
+  
+  // Verify user and fetch user details on mount or when token changes
+  useEffect(() => {
+    const verifyUserToken = async () => {
+      if (token) {
+        try {
+          const response = await fetch(`${BASE_URL}/auth/api/verify`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            setUser(result.user);
+          } else {
+            // Token is invalid
+            Cookies.remove("jwt_token");
+            setUser(null);
+            setTokenState(null);
+          }
+        } catch (error) {
+          console.error("Error verifying user:", error);
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    };
+    
+    verifyUserToken();
+  }, [token]);
   
   const fetchCartItems = useCallback(async () => {
     try {
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/getItems", {
+      const response = await fetch(`${BASE_URL}/cart/getItems`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +93,7 @@ export const CartProvider = ({ children }) => {
 
     
     try {
-      await fetch(`https://quickbite-backendd.onrender.com/cart/update/${itemId}`, {
+      await fetch(`${BASE_URL}/cart/update/${itemId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +111,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "DELETE_ITEM", payload: itemId });
 
     try {
-      await fetch(`https://quickbite-backendd.onrender.com/cart/deleteItem/${itemId}`, {
+      await fetch(`${BASE_URL}/cart/deleteItem/${itemId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -91,7 +129,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "CLEAR_CART" });
 
     try {
-      await fetch("https://quickbite-backendd.onrender.com/cart/clear", {
+      await fetch(`${BASE_URL}/cart/clear`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -122,7 +160,7 @@ export const CartProvider = ({ children }) => {
 
 
     try {
-      const response = await fetch("https://quickbite-backendd.onrender.com/cart/addItem", {
+      const response = await fetch(`${BASE_URL}/cart/addItem`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,6 +182,18 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    Cookies.remove("jwt_token");
+    setTokenState(null);
+    setUser(null);
+    dispatch({ type: "CLEAR_CART" });
+  };
+
+  const updateTokenState = () => {
+    const newToken = Cookies.get("jwt_token");
+    setTokenState(newToken);
+  };
+
 console.log("state", state)
 
   return (
@@ -155,7 +205,12 @@ console.log("state", state)
         handleDelete,
         handleClearCart,
         addItemToCart,
-        cartLength: state.length
+        cartLength: state.length,
+        user,
+        isLoading,
+        logout,
+        token,
+        updateTokenState
       }}
     >
       {children}

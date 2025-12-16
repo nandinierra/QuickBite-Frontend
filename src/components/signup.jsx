@@ -4,12 +4,15 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Signup = () => {
   const navigate = useNavigate();
   const [name, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("customer");
+  const [adminSecretKey, setAdminSecretKey] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
  
@@ -29,6 +32,11 @@ const Signup = () => {
       setPassword(event.target.value)
   }
 
+  const roleInput=(event)=>{
+      setErrorMsg("");
+      setRole(event.target.value)
+  }
+
 
   const onSubmitSuccess = () => {
     console.log("on submit success")
@@ -44,8 +52,14 @@ const Signup = () => {
 
   const signupForm = async (event) => {
     event.preventDefault();
-    const url = "https://quickbite-backendd.onrender.com/auth/register";
-    const userDetails = { name, email, password };
+    const url = `${BASE_URL}/auth/register`;
+    const userDetails = { 
+      name, 
+      email, 
+      password, 
+      role,
+      ...(role === "admin" && { adminSecretKey })
+    };
 
     const options = {
       method: "POST",
@@ -127,6 +141,41 @@ const Signup = () => {
             className="bg-[#333333] p-2 sm:p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
+
+        <div className="flex flex-col mb-4">
+          <label htmlFor="role" className="mb-1 text-sm sm:text-base">
+            SELECT ROLE
+          </label>
+          <select
+            value={role}
+            onChange={roleInput}
+            id="role"
+            className="bg-[#333333] p-2 sm:p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+            <option value="moderator">Moderator</option>
+          </select>
+        </div>
+
+        {role === "admin" && (
+          <div className="flex flex-col mb-4">
+            <label htmlFor="adminSecretKey" className="mb-1 text-sm sm:text-base">
+              ADMIN SECRET KEY
+            </label>
+            <input
+              value={adminSecretKey}
+              onChange={(event) => {
+                setErrorMsg("");
+                setAdminSecretKey(event.target.value);
+              }}
+              type="password"
+              id="adminSecretKey"
+              placeholder="Enter admin secret key"
+              className="bg-[#333333] p-2 sm:p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+        )}
 
        
         

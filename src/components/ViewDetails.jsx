@@ -1,10 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader"
+import ClipLoader from "react-spinners/ClipLoader";
 import { useCart } from "../context/context";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ViewDetails = () => {
   const {addItemToCart}= useCart();
@@ -17,7 +18,7 @@ const ViewDetails = () => {
   useEffect(() => {
     const getItem = async () => {
       try {
-        const url = `https://quickbite-backendd.onrender.com/foodItems/getItemId/${id}`;
+        const url = `${BASE_URL}/foodItems/getItemId/${id}`;
         const response = await fetch(url);
         const data = await response.json();
         setItem(data.food);

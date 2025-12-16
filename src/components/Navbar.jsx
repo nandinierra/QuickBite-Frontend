@@ -14,7 +14,7 @@ const Navbar = () => {
   const [navbarBg, setNavbarBg] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { cartLength } = useCart();
+  const { cartLength, user, logout } = useCart();
 
   const handleScroll = () => {
     if (location.pathname === "/") {
@@ -35,7 +35,7 @@ const Navbar = () => {
   };
 
   const logoutBtn = () => {
-    Cookies.remove("jwt_token");
+    logout();
     navigate("/login", { replace: true });
   };
 
@@ -113,23 +113,30 @@ const Navbar = () => {
         >
           Contact Us
         </p>
+        {user && user.role === "admin" && (
+          <p
+            className={getNavClass(location.pathname === "/admin")}
+            onClick={() => navigate("/admin")}
+          >
+            Admin Panel
+          </p>
+        )}
       </div>
 
       {/* Right Side (Cart + Logout) */}
       <div className="flex items-center space-x-4">
 
-  {/* Cart Icon Wrapper */}
-  <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
-    <FontAwesomeIcon
-      className="text-2xl text-white hover:text-red-400 transition-colors duration-300"
-      icon={faShoppingCart}
-    />
-
+  {user && user.role === "customer" && (
+    <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+      <FontAwesomeIcon
+        className="text-2xl text-white hover:text-red-400 transition-colors duration-300"
+        icon={faShoppingCart}
+      />
       <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
         {cartLength}
       </span>
-    
-  </div>
+    </div>
+  )}
 
   <button
     onClick={logoutBtn}
@@ -185,6 +192,17 @@ const Navbar = () => {
           >
             Contact Us
           </p>
+          {user && user.role === "admin" && (
+            <p
+              className={getNavClass(location.pathname === "/admin")}
+              onClick={() => {
+                navigate("/admin");
+                setMenuOpen(false);
+              }}
+            >
+              Admin Panel
+            </p>
+          )}
 
           <button
             onClick={() => {

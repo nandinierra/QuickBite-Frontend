@@ -5,8 +5,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useCart } from "../context/context";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const PopularDishes = () => {
   const {addItemToCart} = useCart();
@@ -15,7 +16,7 @@ const PopularDishes = () => {
   useEffect(() => {
     const getPopularDishes = async () => {
       try {
-        const response = await fetch("https://quickbite-backendd.onrender.com/foodItems/popular/get");
+        const response = await fetch(`${BASE_URL}/foodItems/popular/get`);
         const data = await response.json();
         if (response.ok) setPopularDishes(data.food);
       } catch (error) {

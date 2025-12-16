@@ -1,8 +1,5 @@
 import { useState } from "react";
-
-//import Cookies from "js-cookie";
 import {useCart} from "../context/context";
-// import Navbar from "./Navbar";
 
 const Cart = () => {
    const [orderPlaced, setOrderPlaced] = useState(false);

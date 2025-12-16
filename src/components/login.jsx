@@ -1,17 +1,27 @@
 import { useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { useCart } from "../context/context";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
   const navigate = useNavigate();
+  const { updateTokenState } = useCart();
   const [email, setMail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
 
-  const onSubmitSuccess = (token) => {
+  const onSubmitSuccess = (token, user) => {
     Cookies.set("jwt_token", token, { expires: 30 });
-    navigate("/", { replace: true });
+    updateTokenState();
+    // Redirect admins to admin dashboard, others to home
+    if (user?.role === "admin") {
+      navigate("/admin", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
   };
 
 
@@ -23,8 +33,11 @@ const Login = () => {
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
-    const url = "https://quickbite-backendd.onrender.com/auth/login";
-    const userDetails = { email, password };
+    const url = `${BASE_URL}/auth/login`;
+    const userDetails = { 
+      email, 
+      password
+    };
 
     const options = {
       method: "POST",
@@ -39,7 +52,7 @@ const Login = () => {
     console.log(data);
 
     if (response.ok) {
-      onSubmitSuccess(data.token);
+      onSubmitSuccess(data.token, data.user);
     } else {
       onSubmitFailure(data.message);
     }
