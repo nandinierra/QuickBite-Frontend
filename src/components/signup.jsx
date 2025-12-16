@@ -4,7 +4,6 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -52,7 +51,8 @@ const Signup = () => {
 
   const signupForm = async (event) => {
     event.preventDefault();
-    const url = `${BASE_URL}/auth/register`;
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+    const url = `${BACKEND_URL}/auth/register`;
     const userDetails = { 
       name, 
       email, 

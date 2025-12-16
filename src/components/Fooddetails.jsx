@@ -11,7 +11,8 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { toast } from "react-toastify";
 import { useCart } from "../context/context";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BASE_URL =
+  import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const Fooddetails = () => {
  

@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useReducer, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import { cartReducer, initialState } from "../reducer/cartReducer.jsx";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify"
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const CartContext = createContext();
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 export const CartProvider = ({ children }) => {
@@ -21,7 +22,7 @@ export const CartProvider = ({ children }) => {
     const verifyUserToken = async () => {
       if (token) {
         try {
-          const response = await fetch(`${BASE_URL}/auth/api/verify`, {
+          const response = await fetch(`${BACKEND_URL}/auth/api/verify`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -53,7 +54,7 @@ export const CartProvider = ({ children }) => {
   
   const fetchCartItems = useCallback(async () => {
     try {
-      const response = await fetch(`${BASE_URL}/cart/getItems`, {
+      const response = await fetch(`${BACKEND_URL}/cart/getItems`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +94,7 @@ export const CartProvider = ({ children }) => {
 
     
     try {
-      await fetch(`${BASE_URL}/cart/update/${itemId}`, {
+      await fetch(`${BACKEND_URL}/cart/update/${itemId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +112,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "DELETE_ITEM", payload: itemId });
 
     try {
-      await fetch(`${BASE_URL}/cart/deleteItem/${itemId}`, {
+      await fetch(`${BACKEND_URL}/cart/deleteItem/${itemId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -129,7 +130,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "CLEAR_CART" });
 
     try {
-      await fetch(`${BASE_URL}/cart/clear`, {
+      await fetch(`${BACKEND_URL}/cart/clear`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -160,7 +161,7 @@ export const CartProvider = ({ children }) => {
 
 
     try {
-      const response = await fetch(`${BASE_URL}/cart/addItem`, {
+      const response = await fetch(`${BACKEND_URL}/cart/addItem`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

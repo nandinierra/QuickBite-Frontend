@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../styles/AdminDashboard.css";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const AdminDashboard = () => {
   const { user, token, logout } = useCart();
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   const fetchFoodItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/foodItems/admin/all`, {
+      const response = await fetch(`${BACKEND_URL}/foodItems/admin/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
       let response;
       if (editingId) {
         response = await fetch(
-          `${BASE_URL}/foodItems/admin/update/${editingId}`,
+          `${BACKEND_URL}/foodItems/admin/update/${editingId}`,
           {
             method: "PUT",
             headers: {
@@ -134,7 +134,7 @@ const AdminDashboard = () => {
           }
         );
       } else {
-        response = await fetch(`${BASE_URL}/foodItems/admin/create`, {
+        response = await fetch(`${BACKEND_URL}/foodItems/admin/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
 
     try {
       const response = await fetch(
-        `${BASE_URL}/foodItems/admin/delete/${id}`,
+        `${BACKEND_URL}/foodItems/admin/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -207,7 +207,7 @@ const AdminDashboard = () => {
   const handleDeactivate = async (id) => {
     try {
       const response = await fetch(
-        `${BASE_URL}/foodItems/admin/deactivate/${id}`,
+        `${BACKEND_URL}/foodItems/admin/deactivate/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -232,7 +232,7 @@ const AdminDashboard = () => {
   const handleReactivate = async (id) => {
     try {
       const response = await fetch(
-        `${BASE_URL}/foodItems/admin/reactivate/${id}`,
+        `${BACKEND_URL}/foodItems/admin/reactivate/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -288,12 +288,6 @@ const AdminDashboard = () => {
   }
 
   const filteredItems = getFilteredAndSortedItems();
-  const dashboardStats = useMemo(() => {
-    const active = foodItems.filter((i) => i.isActive).length;
-    const inactive = foodItems.length - active;
-    const popular = foodItems.filter((i) => i.popular).length;
-    return { total: foodItems.length, active, inactive, popular };
-  }, [foodItems]);
 
   return (
     <div className="admin-dashboard">
@@ -320,25 +314,6 @@ const AdminDashboard = () => {
       </div>
 
       <div className="admin-container">
-      <div className="admin-stats">
-        <div className="stat-card primary">
-          <p className="stat-label">Total Items</p>
-          <p className="stat-value">{dashboardStats.total}</p>
-        </div>
-        <div className="stat-card success">
-          <p className="stat-label">Active</p>
-          <p className="stat-value">{dashboardStats.active}</p>
-        </div>
-        <div className="stat-card warning">
-          <p className="stat-label">Inactive</p>
-          <p className="stat-value">{dashboardStats.inactive}</p>
-        </div>
-        <div className="stat-card info">
-          <p className="stat-label">Popular</p>
-          <p className="stat-value">{dashboardStats.popular}</p>
-        </div>
-      </div>
-
         <div className="admin-controls">
           <button
             onClick={() => {

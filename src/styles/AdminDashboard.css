@@ -78,40 +78,6 @@
   margin: 0 auto;
 }
 
-.admin-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: white;
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  border-left: 6px solid #667eea;
-}
-
-.stat-card.primary { border-color: #667eea; }
-.stat-card.success { border-color: #22c55e; }
-.stat-card.warning { border-color: #f97316; }
-.stat-card.info { border-color: #06b6d4; }
-
-.stat-label {
-  margin: 0;
-  color: #666;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.stat-value {
-  margin: 6px 0 0 0;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #1a1a1a;
-}
-
 .admin-controls {
   margin-bottom: 30px;
 }
