@@ -1,8 +1,9 @@
 import { useState } from "react";
 import {useCart} from "../context/context";
+import CheckoutModal from "./CheckoutModal";
 
 const Cart = () => {
-   const [orderPlaced, setOrderPlaced] = useState(false);
+   const [showCheckout, setShowCheckout] = useState(false);
    const {
     cart,
     loading,
@@ -18,8 +19,7 @@ const Cart = () => {
     if (!cart?.data?.foodItems || cart.data.foodItems.length === 0) {
       return;
     }
-    setOrderPlaced(true);
-    handleClearCart();
+    setShowCheckout(true);
   };
   
   console.log("Cart state:", { cart, loading, isLoading });
@@ -51,25 +51,6 @@ const Cart = () => {
           <h2 className="text-3xl font-semibold mb-4">Your cart is empty 🛒</h2>
           <p className="text-gray-400">Add some delicious food to get started!</p>
         </div>
-
-        {/* Celebration card */}
-        {orderPlaced && (
-          <div className="mt-8 relative w-96 bg-white rounded-2xl shadow-2xl p-8 text-center animate-scaleIn">
-            <h1 className="text-3xl font-bold text-green-600 mb-4">
-              🎉 Order Placed Successfully! 🎉
-            </h1>
-            <p className="text-gray-700 mb-4">
-              Thank you for your order! Your delicious food is on its way.
-            </p>
-            <div className="flex justify-center gap-2 text-4xl animate-bounce">
-              <span>🎉</span>
-              <span>🍕</span>
-              <span>🍔</span>
-              <span>🥤</span>
-              <span>🎉</span>
-            </div>
-          </div>
-        )}
       </div>
     );
 
@@ -86,24 +67,12 @@ const Cart = () => {
   return (
     <div className="max-w-6xl mx-auto mb-12 mt-20 p-4 sm:p-6 md:p-8 bg-gray-50 rounded-2xl shadow-lg">
       <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center text-red-600">Your Cart 🛒</h1>
-
-      {orderPlaced && (
-        <div className="mb-8 relative w-full bg-white rounded-2xl shadow-2xl p-6 sm:p-8 text-center animate-scaleIn">
-          <h1 className="text-3xl sm:text-4xl font-bold text-green-600 mb-4">
-            🎉 Order Placed Successfully! 🎉
-          </h1>
-          <p className="text-gray-700 mb-4">
-            Thank you for your order! Your delicious food is on its way.
-          </p>
-          <div className="flex justify-center gap-2 sm:gap-4 text-4xl sm:text-5xl animate-bounce">
-            <span>🎉</span>
-            <span>🍕</span>
-            <span>🍔</span>
-            <span>🥤</span>
-            <span>🎉</span>
-          </div>
-        </div>
-      )}
+      <CheckoutModal 
+        isOpen={showCheckout} 
+        onClose={() => setShowCheckout(false)}
+        cartTotal={total}
+        cartItems={cartItems}
+      />
 
       <div className="space-y-4 sm:space-y-6">
         {cartItems.filter(item => item.itemId).map((item) => (
