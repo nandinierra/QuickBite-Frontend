@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { User, Mail, Phone, MapPin, Edit2, Save, X, ShoppingBag, DollarSign, Calendar, Camera } from "lucide-react";
 
 const UserProfile = () => {
-  const { token } = useCart();
+  const { token, refreshUser, updateUser } = useCart();
   const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
@@ -92,8 +92,13 @@ const UserProfile = () => {
       const data = await response.json();
       setProfileData((prev) => ({
         ...prev,
-        user: data.user,
+        user: {
+          ...prev.user,
+          ...data.user,
+        },
       }));
+      updateUser(data.user);
+      await fetchUserProfile();
       setIsEditing(false);
       toast.success("Profile updated successfully", {
         position: "bottom-right",
@@ -154,6 +159,10 @@ const UserProfile = () => {
         ...prev,
         user: data.user,
       }));
+      updateUser({
+        profilePicture: data.user.profilePicture,
+      });
+      await refreshUser();
       toast.success("Profile picture updated successfully", {
         position: "bottom-right",
         autoClose: 1500,
@@ -475,8 +484,8 @@ const UserProfile = () => {
                 <tbody className="divide-y divide-gray-200">
                   {orders.map((order) => (
                     <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-mono text-sm text-gray-700">
-                        {order.orderId.substring(0, 8)}...
+                      <td className="px-4 py-3 font-mono text-sm text-gray-700 break-all">
+                        {order.orderId}
                       </td>
                       <td className="px-4 py-3 text-gray-700">
                         {new Date(order.createdAt).toLocaleDateString("en-IN", {

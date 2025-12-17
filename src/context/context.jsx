@@ -327,6 +327,33 @@ export const CartProvider = ({ children }) => {
     setTokenState(newToken);
   };
 
+  const refreshUser = useCallback(async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/api/verify`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUser(result.user);
+      }
+    } catch (error) {
+      console.error("Error refreshing user data:", error);
+    }
+  }, [token]);
+
+  const updateUser = (updatedUserData) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...updatedUserData,
+    }));
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -341,7 +368,9 @@ export const CartProvider = ({ children }) => {
         isLoading,
         logout,
         token,
-        updateTokenState
+        updateTokenState,
+        refreshUser,
+        updateUser
       }}
     >
       {children}
