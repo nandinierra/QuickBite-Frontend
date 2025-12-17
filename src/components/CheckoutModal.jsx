@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useCart } from "../context/context";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
-  const { token } = useCart();
+  const { token, handleClearCart } = useCart();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -97,6 +99,10 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
                 position: "bottom-right",
                 autoClose: 1500,
               });
+              setTimeout(() => {
+                onClose();
+                navigate("/cart", { replace: true });
+              }, 500);
               return;
             }
 
@@ -105,7 +111,7 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               autoClose: 2000,
             });
 
-            onClose();
+            await handleClearCart();
             setFormData({
               fullName: "",
               email: "",
@@ -114,12 +120,20 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               city: "",
               postalCode: "",
             });
+            setTimeout(() => {
+              onClose();
+              navigate("/cart", { replace: true });
+            }, 500);
           } catch (error) {
             console.error("Payment verification error:", error);
             toast.error("Payment verification failed", {
               position: "bottom-right",
               autoClose: 1500,
             });
+            setTimeout(() => {
+              onClose();
+              navigate("/cart", { replace: true });
+            }, 500);
           }
         },
         modal: {
@@ -129,6 +143,8 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               position: "bottom-right",
               autoClose: 1500,
             });
+            onClose();
+            navigate("/cart");
           }
         }
       };

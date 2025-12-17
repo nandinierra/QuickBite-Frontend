@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { User, Mail, Phone, MapPin, Edit2, Save, X, ShoppingBag, DollarSign, Calendar, Camera, CreditCard } from "lucide-react";
 
 const UserProfile = () => {
-  const { token, refreshUser, updateUser } = useCart();
+  const { token, refreshUser, updateUser, handleClearCart } = useCart();
   const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
@@ -230,6 +230,7 @@ const UserProfile = () => {
               position: "bottom-right",
               autoClose: 2000,
             });
+            await handleClearCart();
             await fetchUserProfile();
           } catch (verifyError) {
             console.error("Payment verification error:", verifyError);
