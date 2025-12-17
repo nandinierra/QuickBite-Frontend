@@ -18,8 +18,8 @@ const Cart = () => {
     if (!cart?.data?.foodItems || cart.data.foodItems.length === 0) {
       return;
     }
-    setOrderPlaced(true); // show celebration card
-    handleClearCart(); // clear cart after ordering
+    setOrderPlaced(true);
+    handleClearCart();
   };
   
   console.log("Cart state:", { cart, loading, isLoading });

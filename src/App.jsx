@@ -30,18 +30,20 @@ const App = () => {
     <CartProvider>
     <div className="flex flex-col justify-between min-h-screen">
       {!hiddenpath&&<Navbar/>}
-      <Routes>
-            <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
-             <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login  />} /> 
-               <Route path="/food/:category" element={<ProtectedRoute><Fooddetails/></ProtectedRoute>}/>
-                <Route path="/food/:category/:id" element={<ProtectedRoute><ViewDetails/></ProtectedRoute>}/>
-                <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>}/>
-                <Route path="/aboutus" element={<ProtectedRoute><Aboutus /></ProtectedRoute>}/>
-                <Route path="/contactus" element={<ProtectedRoute><ContactUs /></ProtectedRoute>}/>
-                <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>}/>
-                <Route path="*" element={<PageNotFound />}/>
-      </Routes>
+      <div className={hiddenpath ? "" : "pt-16 sm:pt-20"}>
+        <Routes>
+              <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
+               <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login  />} /> 
+                 <Route path="/food/:category" element={<ProtectedRoute><Fooddetails/></ProtectedRoute>}/>
+                  <Route path="/food/:category/:id" element={<ProtectedRoute><ViewDetails/></ProtectedRoute>}/>
+                  <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>}/>
+                  <Route path="/aboutus" element={<ProtectedRoute><Aboutus /></ProtectedRoute>}/>
+                  <Route path="/contactus" element={<ProtectedRoute><ContactUs /></ProtectedRoute>}/>
+                  <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>}/>
+                  <Route path="*" element={<PageNotFound />}/>
+        </Routes>
+      </div>
        {!hiddenpath&&<Footer/>}
     </div>
     <ToastContainer/>
