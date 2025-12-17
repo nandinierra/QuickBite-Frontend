@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useCart } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { User, Mail, Phone, MapPin, Edit2, Save, X, ShoppingBag, DollarSign, Calendar, Camera } from "lucide-react";
+import { User, Mail, Phone, MapPin, Edit2, Save, X, ShoppingBag, DollarSign, Calendar, Camera, CreditCard } from "lucide-react";
 
 const UserProfile = () => {
   const { token, refreshUser, updateUser } = useCart();
@@ -20,6 +20,7 @@ const UserProfile = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [retryingOrderId, setRetryingOrderId] = useState(null);
 
   const fetchUserProfile = useCallback(async () => {
     try {
@@ -176,6 +177,88 @@ const UserProfile = () => {
     } finally {
       setIsUploadingImage(false);
       e.target.value = "";
+    }
+  };
+
+  const handleRetryPayment = async (orderId) => {
+    try {
+      setRetryingOrderId(orderId);
+
+      const response = await fetch(`${BACKEND_URL}/order/${orderId}/retry-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to initiate payment retry");
+      }
+
+      const data = await response.json();
+      const order = data.order;
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        order_id: order.razorpayOrderId,
+        amount: order.amount * 100,
+        currency: order.currency,
+        name: "QuickBite",
+        description: `Payment for Order ${order.orderId}`,
+        handler: async (paymentResponse) => {
+          try {
+            const verifyResponse = await fetch(`${BACKEND_URL}/order/verify-payment`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                razorpayOrderId: paymentResponse.razorpay_order_id,
+                razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                razorpaySignature: paymentResponse.razorpay_signature,
+              }),
+            });
+
+            if (!verifyResponse.ok) {
+              throw new Error("Payment verification failed");
+            }
+
+            toast.success("Payment completed successfully!", {
+              position: "bottom-right",
+              autoClose: 2000,
+            });
+            await fetchUserProfile();
+          } catch (verifyError) {
+            console.error("Payment verification error:", verifyError);
+            toast.error("Payment verification failed", {
+              position: "bottom-right",
+              autoClose: 1500,
+            });
+          }
+        },
+        prefill: {
+          name: profileData?.user?.name,
+          email: profileData?.user?.email,
+          contact: profileData?.user?.phone,
+        },
+        theme: {
+          color: "#f97316",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Error retrying payment:", error);
+      toast.error(error.message || "Failed to retry payment", {
+        position: "bottom-right",
+        autoClose: 1500,
+      });
+    } finally {
+      setRetryingOrderId(null);
     }
   };
 
@@ -511,15 +594,28 @@ const UserProfile = () => {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
-                            order.paymentStatus === "success"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-orange-100 text-orange-800"
-                          }`}
-                        >
-                          {order.paymentStatus}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                              order.paymentStatus === "success"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-orange-100 text-orange-800"
+                            }`}
+                          >
+                            {order.paymentStatus}
+                          </span>
+                          {order.paymentStatus === "pending" && (
+                            <button
+                              onClick={() => handleRetryPayment(order._id)}
+                              disabled={retryingOrderId === order._id}
+                              className="flex items-center gap-1 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Retry payment"
+                            >
+                              <CreditCard size={14} />
+                              {retryingOrderId === order._id ? "Processing..." : "Pay"}
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
