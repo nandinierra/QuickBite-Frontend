@@ -15,6 +15,7 @@ import Aboutus from "./components/Aboutus.jsx"
 import ContactUs from "./components/Contactus.jsx"
 import PageNotFound from "./components/Pagenotfound.jsx"
 import AdminDashboard from "./components/AdminDashboard.jsx"
+import UserProfile from "./components/UserProfile.jsx"
 import { CartProvider } from "./context/context.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,6 +39,7 @@ const App = () => {
                  <Route path="/food/:category" element={<ProtectedRoute><Fooddetails/></ProtectedRoute>}/>
                   <Route path="/food/:category/:id" element={<ProtectedRoute><ViewDetails/></ProtectedRoute>}/>
                   <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>}/>
+                  <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>}/>
                   <Route path="/aboutus" element={<ProtectedRoute><Aboutus /></ProtectedRoute>}/>
                   <Route path="/contactus" element={<ProtectedRoute><ContactUs /></ProtectedRoute>}/>
                   <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>}/>

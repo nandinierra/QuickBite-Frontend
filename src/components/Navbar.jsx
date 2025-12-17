@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useLocation } from "react-router-dom";
-import { faShoppingCart, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart, faBars, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {useCart} from "../context/context";
@@ -14,6 +14,7 @@ const Navbar = () => {
   const [navbarBg, setNavbarBg] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const { cartLength, user, logout } = useCart();
 
   const handleScroll = () => {
@@ -123,7 +124,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Right Side (Cart + Logout) */}
+      {/* Right Side (Cart + Profile + Logout) */}
       <div className="flex items-center gap-3 sm:gap-4">
 
   {user && user.role === "customer" && (
@@ -141,12 +142,65 @@ const Navbar = () => {
     </div>
   )}
 
-  <button
-    onClick={logoutBtn}
-    className="hidden md:block cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
-  >
-    Logout
-  </button>
+  {user && (
+    <div className="relative hidden md:block">
+      <button
+        onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+        className="flex items-center gap-2 text-white hover:text-red-400 transition-colors"
+        title="User Profile"
+      >
+        {user.profilePicture ? (
+          <img
+            src={user.profilePicture}
+            alt={user.email}
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-orange-500 hover:border-red-400 transition-colors"
+          />
+        ) : (
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center border-2 border-orange-500 hover:border-red-400 transition-colors">
+            <FontAwesomeIcon
+              className="text-lg sm:text-xl text-white"
+              icon={faUser}
+            />
+          </div>
+        )}
+      </button>
+      
+      {profileDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-black/95 backdrop-blur-md rounded-lg shadow-lg border border-red-600/20 overflow-hidden">
+          <div className="px-4 py-3 border-b border-red-600/20">
+            <p className="text-white font-semibold truncate">{user.email}</p>
+          </div>
+          <button
+            onClick={() => {
+              navigate("/profile");
+              setProfileDropdownOpen(false);
+            }}
+            className="w-full text-left px-4 py-2 text-white hover:bg-red-600/20 transition-colors"
+          >
+            My Profile
+          </button>
+          <button
+            onClick={() => {
+              logoutBtn();
+              setProfileDropdownOpen(false);
+            }}
+            className="w-full text-left px-4 py-2 text-white hover:bg-red-600/20 transition-colors border-t border-red-600/20"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+
+  {user && !profileDropdownOpen && (
+    <button
+      onClick={logoutBtn}
+      className="hidden md:block cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+    >
+      Logout
+    </button>
+  )}
 
   <div
     className="md:hidden text-white text-xl sm:text-2xl cursor-pointer hover:text-red-400 transition-colors"
@@ -204,6 +258,18 @@ const Navbar = () => {
               }}
             >
               Admin Panel
+            </p>
+          )}
+
+          {user && (
+            <p
+              className={getNavClass(location.pathname === "/profile")}
+              onClick={() => {
+                navigate("/profile");
+                setMenuOpen(false);
+              }}
+            >
+              My Profile
             </p>
           )}
 

@@ -327,8 +327,6 @@ export const CartProvider = ({ children }) => {
     setTokenState(newToken);
   };
 
-console.log("state", state)
-
   return (
     <CartContext.Provider
       value={{
