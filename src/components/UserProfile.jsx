@@ -184,7 +184,7 @@ const UserProfile = () => {
     try {
       setRetryingOrderId(orderId);
 
-      const response = await fetch(`${BACKEND_URL}/order/${orderId}/retry-payment`, {
+      const response = await fetch(`${BACKEND_URL}/orders/${orderId}/retry-payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -209,7 +209,7 @@ const UserProfile = () => {
         description: `Payment for Order ${order.orderId}`,
         handler: async (paymentResponse) => {
           try {
-            const verifyResponse = await fetch(`${BACKEND_URL}/order/verify-payment`, {
+            const verifyResponse = await fetch(`${BACKEND_URL}/orders/verify-payment`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -302,7 +302,7 @@ const UserProfile = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Information Card */}
-          <div className="lg:col-span-2">
+          <div className={user.role === "admin" ? "lg:col-span-3" : "lg:col-span-2"}>
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
@@ -485,150 +485,154 @@ const UserProfile = () => {
             </div>
           </div>
 
-          {/* Statistics Card */}
-          <div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Account Statistics</h3>
+          {/* Statistics Card - Only for customers */}
+          {user.role !== "admin" && (
+            <div>
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Account Statistics</h3>
 
-              <div className="space-y-4">
-                {/* Total Orders */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Total Orders</p>
-                      <p className="text-3xl font-bold text-blue-600">
-                        {statistics.totalOrders}
-                      </p>
-                    </div>
-                    <ShoppingBag className="text-blue-600" size={32} />
-                  </div>
-                </div>
-
-                {/* Total Spent */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Total Spent</p>
-                      <p className="text-3xl font-bold text-green-600">
-                        ₹{statistics.totalSpent.toFixed(2)}
-                      </p>
-                    </div>
-                    <DollarSign className="text-green-600" size={32} />
-                  </div>
-                </div>
-
-                {/* Last Order */}
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <Calendar className="text-purple-600 mt-1" size={24} />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Last Order</p>
-                      <p className="text-sm font-semibold text-purple-600">
-                        {statistics.lastOrderDate
-                          ? new Date(statistics.lastOrderDate).toLocaleDateString("en-IN", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })
-                          : "No orders yet"}
-                      </p>
+                <div className="space-y-4">
+                  {/* Total Orders */}
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Total Orders</p>
+                        <p className="text-3xl font-bold text-blue-600">
+                          {statistics.totalOrders}
+                        </p>
+                      </div>
+                      <ShoppingBag className="text-blue-600" size={32} />
                     </div>
                   </div>
-                </div>
 
-                {/* Account Role */}
-                <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Account Type</p>
-                  <p className="text-sm font-bold text-orange-600 capitalize">
-                    {user.role}
-                  </p>
+                  {/* Total Spent */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Total Spent</p>
+                        <p className="text-3xl font-bold text-green-600">
+                          ₹{statistics.totalSpent.toFixed(2)}
+                        </p>
+                      </div>
+                      <DollarSign className="text-green-600" size={32} />
+                    </div>
+                  </div>
+
+                  {/* Last Order */}
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Calendar className="text-purple-600 mt-1" size={24} />
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600">Last Order</p>
+                        <p className="text-sm font-semibold text-purple-600">
+                          {statistics.lastOrderDate
+                            ? new Date(statistics.lastOrderDate).toLocaleDateString("en-IN", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "No orders yet"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Account Role */}
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Account Type</p>
+                    <p className="text-sm font-bold text-orange-600 capitalize">
+                      {user.role}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Orders History */}
-        <div className="mt-8 bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Order History</h2>
-
-          {orders && orders.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-gray-100 border-b-2 border-gray-300">
-                  <tr>
-                    <th className="px-4 py-3 font-semibold text-gray-900">Order ID</th>
-                    <th className="px-4 py-3 font-semibold text-gray-900">Date</th>
-                    <th className="px-4 py-3 font-semibold text-gray-900">Amount</th>
-                    <th className="px-4 py-3 font-semibold text-gray-900">Status</th>
-                    <th className="px-4 py-3 font-semibold text-gray-900">Payment</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {orders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-mono text-sm text-gray-700 break-all">
-                        {order.orderId}
-                      </td>
-                      <td className="px-4 py-3 text-gray-700">
-                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </td>
-                      <td className="px-4 py-3 font-semibold text-gray-900">
-                        ₹{order.totalAmount.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
-                            order.orderStatus === "delivered"
-                              ? "bg-green-100 text-green-800"
-                              : order.orderStatus === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {order.orderStatus}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
-                              order.paymentStatus === "success"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-orange-100 text-orange-800"
-                            }`}
-                          >
-                            {order.paymentStatus}
-                          </span>
-                          {order.paymentStatus === "pending" && (
-                            <button
-                              onClick={() => handleRetryPayment(order._id)}
-                              disabled={retryingOrderId === order._id}
-                              className="flex items-center gap-1 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                              title="Retry payment"
-                            >
-                              <CreditCard size={14} />
-                              {retryingOrderId === order._id ? "Processing..." : "Pay"}
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <ShoppingBag className="mx-auto text-gray-400 mb-4" size={48} />
-              <p className="text-gray-600">No orders yet. Start shopping to see your order history!</p>
-            </div>
           )}
         </div>
+
+        {/* Orders History - Only for customers */}
+        {user.role !== "admin" && (
+          <div className="mt-8 bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Order History</h2>
+
+            {orders && orders.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-gray-100 border-b-2 border-gray-300">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold text-gray-900">Order ID</th>
+                      <th className="px-4 py-3 font-semibold text-gray-900">Date</th>
+                      <th className="px-4 py-3 font-semibold text-gray-900">Amount</th>
+                      <th className="px-4 py-3 font-semibold text-gray-900">Status</th>
+                      <th className="px-4 py-3 font-semibold text-gray-900">Payment</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {orders.map((order) => (
+                      <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-3 font-mono text-sm text-gray-700 break-all">
+                          {order.orderId}
+                        </td>
+                        <td className="px-4 py-3 text-gray-700">
+                          {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </td>
+                        <td className="px-4 py-3 font-semibold text-gray-900">
+                          ₹{order.totalAmount.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                              order.orderStatus === "delivered"
+                                ? "bg-green-100 text-green-800"
+                                : order.orderStatus === "cancelled"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {order.orderStatus}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                                order.paymentStatus === "success"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-orange-100 text-orange-800"
+                              }`}
+                            >
+                              {order.paymentStatus}
+                            </span>
+                            {order.paymentStatus === "pending" && (
+                              <button
+                                onClick={() => handleRetryPayment(order._id)}
+                                disabled={retryingOrderId === order._id}
+                                className="flex items-center gap-1 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                title="Retry payment"
+                              >
+                                <CreditCard size={14} />
+                                {retryingOrderId === order._id ? "Processing..." : "Pay"}
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <ShoppingBag className="mx-auto text-gray-400 mb-4" size={48} />
+                <p className="text-gray-600">No orders yet. Start shopping to see your order history!</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

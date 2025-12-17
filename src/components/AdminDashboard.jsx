@@ -553,11 +553,6 @@ const AdminDashboard = () => {
                       {item.rating && (
                         <p className="item-rating">Rating: {item.rating}⭐</p>
                       )}
-
-                      <div className="item-meta-info">
-                        <small>Created: {new Date(item.createdAt).toLocaleDateString()}</small>
-                        {item.createdBy && <small>By: {item.createdBy.name}</small>}
-                      </div>
                     </div>
 
                     <div className="item-actions">
