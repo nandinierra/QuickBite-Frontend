@@ -64,8 +64,8 @@ const Categories = () => {
         xl:grid-cols-5
         gap-4 sm:gap-6
         justify-items-center 
-        px-4 sm:px-6 md:px-0
-        w-full
+         sm:px-6 md:px-0
+      
       "
     >
       {listOfCategories.map((eachCategory, index) => (
@@ -73,9 +73,9 @@ const Categories = () => {
           key={eachCategory.id}
           data-aos="fade-up"
           data-aos-delay={index * 100}
-          className="bg-white w-full max-w-xs rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-4 hover:shadow-2xl cursor-pointer border border-gray-200 hover:border-red-500 group"
+          className="bg-white w-full min-w-[250px] max-w-xs rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-4 hover:shadow-2xl cursor-pointer border border-gray-200 hover:border-red-500 group"
         >
-          <div className="relative overflow-hidden h-48 sm:h-56">
+          <div className="relative overflow-hidden h-48  sm:h-56">
             <img
               className="h-full w-full object-cover transform transition duration-500 group-hover:scale-130 group-hover:brightness-125"
               src={eachCategory.image}
@@ -102,11 +102,14 @@ const Categories = () => {
                   type="button"
                   className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2 px-4 rounded-xl cursor-pointer text-xs sm:text-sm font-bold text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
-                  View 🔍
+                  View
                 </button>
               </Link>
             </div>
           </div>
+
+
+
         </div>
       ))}
     </div>

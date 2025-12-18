@@ -136,9 +136,9 @@ const Testimonials = () => {
                         alt={review.name}
                         className="w-28 h-28 sm:w-32 sm:h-32 rounded-full mx-auto border-4 border-white shadow-xl group-hover:scale-110 transition-transform relative z-10"
                       />
-                      <div className="absolute -bottom-1 -right-1 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+                      {/* <div className="absolute -bottom-1 -right-1 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
                         ⭐
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Rating Stars */}

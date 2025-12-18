@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [editingId, setEditingId] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("nameAZ");
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -395,11 +395,7 @@ const AdminDashboard = () => {
       );
     }
 
-    if (sortBy === "newest") {
-      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (sortBy === "oldest") {
-      filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    } else if (sortBy === "nameAZ") {
+    if (sortBy === "nameAZ") {
       filtered.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === "nameZA") {
       filtered.sort((a, b) => b.name.localeCompare(a.name));
@@ -415,29 +411,7 @@ const AdminDashboard = () => {
   const filteredItems = getFilteredAndSortedItems();
 
   return (
-    <div className="admin-dashboard">
-      <div className="admin-header">
-        <div className="admin-header-content">
-          <h1>Admin Dashboard</h1>
-          <p className="subtitle">Manage your restaurant's menu items</p>
-        </div>
-        <div className="admin-header-actions">
-          <div className="admin-user-info">
-            <span className="user-name">{user?.name}</span>
-            <span className="user-role">{user?.role.toUpperCase()}</span>
-          </div>
-          <button
-            onClick={() => {
-              logout();
-              navigate("/login", { replace: true });
-            }}
-            className="logout-btn"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
+    <div className="admin-dashboard"> 
       <div className="admin-container">
         <div className="admin-controls">
           <button
@@ -654,8 +628,6 @@ const AdminDashboard = () => {
               onChange={(e) => setSortBy(e.target.value)}
               className="filter-select"
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
               <option value="nameAZ">Name (A-Z)</option>
               <option value="nameZA">Name (Z-A)</option>
             </select>

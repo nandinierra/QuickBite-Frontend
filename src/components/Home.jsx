@@ -59,9 +59,9 @@ const Home = () => {
 
         
         <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/40 to-black/70 flex flex-col justify-center items-start px-6 sm:px-10 md:px-20 lg:px-28">
-          <div className="max-w-3xl text-left space-y-6 animate-fadeIn">
-            <div className="inline-block bg-red-600/20 backdrop-blur-sm border border-red-500 rounded-full px-4 py-2 mb-4">
-              <p className="text-red-300 font-semibold text-sm">🚀 Fast & Fresh Food Delivery</p>
+          <div className="max-w-3xl text-left space-y-6 mt-2 animate-fadeIn">
+            <div className="inline-block bg-red-600/20  backdrop-blur-sm border border-red-500 rounded-full px-4 py-2 mb-4">
+              <p className="text-red-300 font-semibold text-sm "> Fast & Fresh Food Delivery</p>
             </div>
             <h1
               style={{ fontFamily: "Playfair" }}
@@ -79,7 +79,7 @@ const Home = () => {
               }}
               className="mt-6 cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-3 md:px-10 md:py-4 rounded-full hover:shadow-2xl shadow-lg transform hover:scale-105 transition-all duration-300 font-semibold text-base md:text-lg"
             >
-              Order Now 🍕
+              Order Now 
             </button>
           </div>
 
@@ -115,6 +115,7 @@ const Home = () => {
         >
           <Categories />
         </div>
+
       </section>
 
 
