@@ -30,6 +30,20 @@ const AdminDashboard = () => {
     popular: false,
     rating: "0",
   });
+  
+  // Form validation errors
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    category: "",
+    type: "",
+    price: {
+      regular: "",
+      medium: "",
+      large: "",
+    },
+    image: "",
+    rating: "",
+  });
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
@@ -67,22 +81,91 @@ const AdminDashboard = () => {
     }
   };
 
+  // Validation functions
+  const validateName = (value) => {
+    if (!value.trim()) return "Name is required";
+    if (value.trim().length < 3) return "Name must be at least 3 characters";
+    if (value.trim().length > 100) return "Name must not exceed 100 characters";
+    return "";
+  };
+
+  const validateCategory = (value) => {
+    if (!value.trim()) return "Category is required";
+    if (value.trim().length < 2) return "Category must be at least 2 characters";
+    if (value.trim().length > 50) return "Category must not exceed 50 characters";
+    return "";
+  };
+
+  const validateType = (value) => {
+    if (!value.trim()) return "Type is required";
+    if (value.trim().length < 2) return "Type must be at least 2 characters";
+    if (value.trim().length > 50) return "Type must not exceed 50 characters";
+    return "";
+  };
+
+  const validatePrice = (value) => {
+    const num = parseFloat(value);
+    if (isNaN(num) || num <= 0) return "Price must be greater than 0";
+    if (num > 100000) return "Price must not exceed 100,000";
+    return "";
+  };
+
+  const validateImageUrl = (value) => {
+    if (!value.trim()) return ""; // Optional field
+    try {
+      new URL(value);
+      return "";
+    } catch {
+      return "Please enter a valid URL";
+    }
+  };
+
+  const validateRating = (value) => {
+    if (!value.trim()) return ""; // Optional field
+    const num = parseFloat(value);
+    if (isNaN(num)) return "Rating must be a number";
+    if (num < 0 || num > 5) return "Rating must be between 0 and 5";
+    return "";
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (name.startsWith("price.")) {
       const priceField = name.split(".")[1];
+      const numValue = parseFloat(value) || 0;
       setFormData({
         ...formData,
         price: {
           ...formData.price,
-          [priceField]: parseFloat(value) || 0,
+          [priceField]: numValue,
+        },
+      });
+      // Validate price
+      setFormErrors({
+        ...formErrors,
+        price: {
+          ...formErrors.price,
+          [priceField]: validatePrice(value),
         },
       });
     } else {
       setFormData({
         ...formData,
         [name]: type === "checkbox" ? checked : value,
+      });
+      
+      // Validate field
+      let error = "";
+      if (name === "name") error = validateName(value);
+      else if (name === "category") error = validateCategory(value);
+      else if (name === "type") error = validateType(value);
+      else if (name === "image") error = validateImageUrl(value);
+      else if (name === "rating") error = validateRating(value);
+      
+      setFormErrors({
+        ...formErrors,
+        [name]: error,
       });
     }
   };
@@ -102,6 +185,18 @@ const AdminDashboard = () => {
       popular: false,
       rating: "0",
     });
+    setFormErrors({
+      name: "",
+      category: "",
+      type: "",
+      price: {
+        regular: "",
+        medium: "",
+        large: "",
+      },
+      image: "",
+      rating: "",
+    });
     setEditingId(null);
     setShowForm(false);
   };
@@ -109,13 +204,31 @@ const AdminDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.category || !formData.type) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+    // Validate all fields
+    const nameError = validateName(formData.name);
+    const categoryError = validateCategory(formData.category);
+    const typeError = validateType(formData.type);
+    const regularPriceError = validatePrice(formData.price.regular.toString());
+    const mediumPriceError = validatePrice(formData.price.medium.toString());
+    const largePriceError = validatePrice(formData.price.large.toString());
+    const imageError = validateImageUrl(formData.image);
+    const ratingError = validateRating(formData.rating);
 
-    if (formData.price.regular <= 0 || formData.price.medium <= 0 || formData.price.large <= 0) {
-      toast.error("All prices must be greater than 0");
+    setFormErrors({
+      name: nameError,
+      category: categoryError,
+      type: typeError,
+      price: {
+        regular: regularPriceError,
+        medium: mediumPriceError,
+        large: largePriceError,
+      },
+      image: imageError,
+      rating: ratingError,
+    });
+
+    if (nameError || categoryError || typeError || regularPriceError || mediumPriceError || largePriceError || imageError || ratingError) {
+      toast.error("Please fix the validation errors before submitting");
       return;
     }
 
@@ -169,6 +282,18 @@ const AdminDashboard = () => {
       image: item.image || "",
       popular: item.popular || false,
       rating: item.rating || "0",
+    });
+    setFormErrors({
+      name: "",
+      category: "",
+      type: "",
+      price: {
+        regular: "",
+        medium: "",
+        large: "",
+      },
+      image: "",
+      rating: "",
     });
     setEditingId(item._id);
     setShowForm(true);
@@ -341,8 +466,12 @@ const AdminDashboard = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="e.g., Margherita Pizza"
+                  className={formErrors.name ? "error" : ""}
                   required
                 />
+                {formErrors.name && (
+                  <span className="error-message">{formErrors.name}</span>
+                )}
               </div>
 
               <div className="form-row">
@@ -354,8 +483,12 @@ const AdminDashboard = () => {
                     value={formData.category}
                     onChange={handleInputChange}
                     placeholder="e.g., Pizza"
+                    className={formErrors.category ? "error" : ""}
                     required
                   />
+                  {formErrors.category && (
+                    <span className="error-message">{formErrors.category}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -366,8 +499,12 @@ const AdminDashboard = () => {
                     value={formData.type}
                     onChange={handleInputChange}
                     placeholder="e.g., Vegetarian"
+                    className={formErrors.type ? "error" : ""}
                     required
                   />
+                  {formErrors.type && (
+                    <span className="error-message">{formErrors.type}</span>
+                  )}
                 </div>
               </div>
 
@@ -392,8 +529,12 @@ const AdminDashboard = () => {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
+                    className={formErrors.price.regular ? "error" : ""}
                     required
                   />
+                  {formErrors.price.regular && (
+                    <span className="error-message">{formErrors.price.regular}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -405,8 +546,12 @@ const AdminDashboard = () => {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
+                    className={formErrors.price.medium ? "error" : ""}
                     required
                   />
+                  {formErrors.price.medium && (
+                    <span className="error-message">{formErrors.price.medium}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -418,8 +563,12 @@ const AdminDashboard = () => {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
+                    className={formErrors.price.large ? "error" : ""}
                     required
                   />
+                  {formErrors.price.large && (
+                    <span className="error-message">{formErrors.price.large}</span>
+                  )}
                 </div>
               </div>
 
@@ -432,7 +581,11 @@ const AdminDashboard = () => {
                     value={formData.image}
                     onChange={handleInputChange}
                     placeholder="https://example.com/image.jpg"
+                    className={formErrors.image ? "error" : ""}
                   />
+                  {formErrors.image && (
+                    <span className="error-message">{formErrors.image}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -443,7 +596,11 @@ const AdminDashboard = () => {
                     value={formData.rating}
                     onChange={handleInputChange}
                     placeholder="e.g., 4.5"
+                    className={formErrors.rating ? "error" : ""}
                   />
+                  {formErrors.rating && (
+                    <span className="error-message">{formErrors.rating}</span>
+                  )}
                 </div>
               </div>
 
@@ -561,7 +718,7 @@ const AdminDashboard = () => {
                         className="action-btn edit-btn"
                         title="Edit item"
                       >
-                        ✏️ Edit
+                         Edit
                       </button>
 
                       {item.isActive ? (
@@ -570,7 +727,7 @@ const AdminDashboard = () => {
                           className="action-btn deactivate-btn"
                           title="Deactivate item"
                         >
-                          👁️ Deactivate
+                           Deactivate
                         </button>
                       ) : (
                         <button
@@ -578,7 +735,7 @@ const AdminDashboard = () => {
                           className="action-btn reactivate-btn"
                           title="Reactivate item"
                         >
-                          🔄 Reactivate
+                           Reactivate
                         </button>
                       )}
 
@@ -587,7 +744,7 @@ const AdminDashboard = () => {
                         className="action-btn delete-btn"
                         title="Delete item"
                       >
-                        🗑️ Delete
+                         Delete
                       </button>
                     </div>
                   </div>

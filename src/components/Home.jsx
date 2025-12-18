@@ -50,7 +50,7 @@ const Home = () => {
     
     <div className="overflow-x-hidden">
     
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-screen overflow-hidden">
         <img
           className="w-full h-full object-cover"
           src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80"
@@ -58,15 +58,18 @@ const Home = () => {
         />
 
         
-        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/30 to-black/60 flex flex-col justify-center items-start px-6 sm:px-10 md:px-20 lg:px-28">
-          <div className="max-w-3xl text-left space-y-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/40 to-black/70 flex flex-col justify-center items-start px-6 sm:px-10 md:px-20 lg:px-28">
+          <div className="max-w-3xl text-left space-y-6 animate-fadeIn">
+            <div className="inline-block bg-red-600/20 backdrop-blur-sm border border-red-500 rounded-full px-4 py-2 mb-4">
+              <p className="text-red-300 font-semibold text-sm">🚀 Fast & Fresh Food Delivery</p>
+            </div>
             <h1
               style={{ fontFamily: "Playfair" }}
-              className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight"
+              className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight drop-shadow-lg"
             >
-              Fast, Fresh & Flavorful <br /> Delivered to Your Doorstep
+              Fast, Fresh & <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">Flavorful</span> <br /> Delivered to Your Doorstep
             </h1>
-            <p className="text-white text-base sm:text-lg md:text-xl leading-relaxed">
+            <p className="text-gray-100 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-md">
               Craving something tasty? QuickBite delivers your <br className="hidden md:block" /> favorite
               meals hot, fresh, and fast — right to your doorstep.
             </p>
@@ -74,9 +77,9 @@ const Home = () => {
               onClick={() => {
                 categoriesRef.current?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="mt-4 cursor-pointer bg-red-600 text-white px-6 py-3 md:px-8 md:py-3 rounded-full hover:bg-red-700 transition-all duration-300"
+              className="mt-6 cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-3 md:px-10 md:py-4 rounded-full hover:shadow-2xl shadow-lg transform hover:scale-105 transition-all duration-300 font-semibold text-base md:text-lg"
             >
-              Order Now
+              Order Now 🍕
             </button>
           </div>
 
@@ -85,7 +88,7 @@ const Home = () => {
             onClick={() => {
               categoriesRef.current?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white text-3xl sm:text-4xl cursor-pointer animate-bounce"
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-3xl sm:text-4xl cursor-pointer animate-bounce drop-shadow-lg hover:scale-110 transition-transform"
             icon={faChevronDown}
           />
         </div>
@@ -94,13 +97,17 @@ const Home = () => {
 
       <section
         ref={categoriesRef}
-        className="flex flex-col items-center justify-center text-center px-4 sm:px-8 md:px-16 lg:px-24 py-20 bg-white"
+        className="flex flex-col items-center justify-center text-center px-4 sm:px-8 md:px-16 lg:px-24 py-24 bg-gradient-to-b from-white via-gray-50 to-white"
       >
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">Categories</h1>
-        <p className="text-[#778095] text-base sm:text-lg md:text-xl max-w-3xl mb-12">
-          Discover delicious food across categories carefully curated to satisfy every craving. Choose
-          from a variety of cuisines and dishes, all delivered fresh to your doorstep.
-        </p>
+        <div className="max-w-3xl mb-16">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-gray-900">
+            Explore Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">Categories</span>
+          </h1>
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto">
+            Discover delicious food across categories carefully curated to satisfy every craving. Choose
+            from a variety of cuisines and dishes, all delivered fresh to your doorstep.
+          </p>
+        </div>
 
         <div
           id="categories-section"
@@ -111,12 +118,11 @@ const Home = () => {
       </section>
 
 
-      <section id="popular-section" ref={popularRef} className="bg-gray-50 py-20 px-4 sm:px-8 md:px-16 lg:px-24">
+      <section id="popular-section" ref={popularRef} className="bg-gradient-to-b from-gray-50 via-gray-50 to-white py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-16 lg:px-24 pb-0">
         <PopularDishes />
       </section>
 
-
-      <section className="py-20 bg-white">
+      <section className="pt-12 sm:pt-12 md:pt-12 bg-white">
         <Testimonials />
       </section>
     </div>

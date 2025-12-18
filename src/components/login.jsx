@@ -10,13 +10,58 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
+  
+  // Field-level validation errors
+  const [errors, setErrors] = useState({
+    email: "",
+    password: ""
+  });
 
-  const onSubmitSuccess = (token) => {
+  const onSubmitSuccess = (token, user) => {
     Cookies.set("jwt_token", token, { expires: 30 });
     updateTokenState();
-    navigate("/", { replace: true });
+    if (user?.role === "admin") {
+      navigate("/admin", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
   };
 
+
+  // Validation functions
+  const validateEmail = (value) => {
+    if (!value.trim()) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address";
+    }
+    return "";
+  };
+
+  const validatePassword = (value) => {
+    if (!value) {
+      return "Password is required";
+    }
+    return "";
+  };
+
+  const handleEmailChange = (event) => {
+    const value = event.target.value;
+    setMail(value);
+    setErrors(prev => ({ ...prev, email: validateEmail(value) }));
+    setErrorMsg("");
+    setShowErrorMsg(false);
+  };
+
+  const handlePasswordChange = (event) => {
+    const value = event.target.value;
+    setPassword(value);
+    setErrors(prev => ({ ...prev, password: validatePassword(value) }));
+    setErrorMsg("");
+    setShowErrorMsg(false);
+  };
 
   const onSubmitFailure = (e) => {
     setShowErrorMsg(true);
@@ -26,10 +71,26 @@ const Login = () => {
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
+    
+    // Validate all fields
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    
+    setErrors({
+      email: emailError,
+      password: passwordError
+    });
+    
+    if (emailError || passwordError) {
+      setShowErrorMsg(true);
+      setErrorMsg("Please fix the errors above before submitting");
+      return;
+    }
+    
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
     const url = `${BACKEND_URL}/auth/login`;
     const userDetails = { 
-      email, 
+      email: email.trim().toLowerCase(), 
       password
     };
 
@@ -41,16 +102,30 @@ const Login = () => {
       body: JSON.stringify(userDetails),
     };
 
-    const response = await fetch(url, options);
-    const data = await response.json();
-    console.log(data);
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
 
-    if (response.ok) {
-      onSubmitSuccess(data.token);
-    } else {
-      onSubmitFailure(data.message);
+      if (response.ok) {
+        onSubmitSuccess(data.token, data.user);
+      } else {
+        // Handle backend validation errors
+        if (data.errors && Array.isArray(data.errors)) {
+          const fieldErrors = {};
+          data.errors.forEach(err => {
+            fieldErrors[err.field] = err.message;
+          });
+          setErrors(prev => ({ ...prev, ...fieldErrors }));
+          setErrorMsg(data.message || "Validation failed");
+        } else {
+          setErrorMsg(data.message || "Login failed");
+        }
+        setShowErrorMsg(true);
+      }
+    } catch (error) {
+      setErrorMsg("Network error. Please try again.");
+      setShowErrorMsg(true);
     }
-
   };
 
 
@@ -80,12 +155,17 @@ const Login = () => {
           </label>
           <input
             value={email}
-            onChange={(event) => setMail(event.target.value)}
+            onChange={handleEmailChange}
             id="email"
             type="email"
             placeholder="you@example.com"
-            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+            className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+              errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+            }`}
           />
+          {errors.email && (
+            <p className="text-red-400 text-xs mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div className="flex flex-col mb-8">
@@ -95,11 +175,16 @@ const Login = () => {
           <input
             value={password}
             type="password"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={handlePasswordChange}
             id="password"
             placeholder="••••••••"
-            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+            className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+              errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+            }`}
           />
+          {errors.password && (
+            <p className="text-red-400 text-xs mt-1">{errors.password}</p>
+          )}
         </div>
 
         {showErrorMsg && (

@@ -14,27 +14,104 @@ const Signup = () => {
   const [adminSecretKey, setAdminSecretKey] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  
+  // Field-level validation errors
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    adminSecretKey: ""
+  });
  
+  // Validation functions
+  const validateName = (value) => {
+    if (!value.trim()) {
+      return "Name is required";
+    }
+    if (value.trim().length < 3) {
+      return "Name must be at least 3 characters";
+    }
+    if (value.trim().length > 50) {
+      return "Name must not exceed 50 characters";
+    }
+    if (!/^[a-zA-Z\s]+$/.test(value)) {
+      return "Name can only contain letters and spaces";
+    }
+    return "";
+  };
+
+  const validateEmail = (value) => {
+    if (!value.trim()) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address";
+    }
+    return "";
+  };
+
+  const validatePassword = (value) => {
+    if (!value) {
+      return "Password is required";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    if (value.length > 50) {
+      return "Password must not exceed 50 characters";
+    }
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+      return "Password must contain uppercase, lowercase, and a number";
+    }
+    return "";
+  };
+
+  const validateAdminSecretKey = (value) => {
+    if (role === "admin" && !value.trim()) {
+      return "Admin secret key is required";
+    }
+    return "";
+  };
+
   const nameInput = (event) => {
+    const value = event.target.value;
+    setUsername(value);
+    setErrors(prev => ({ ...prev, name: validateName(value) }));
     setErrorMsg("");
-    setUsername(event.target.value);
-    
   }; 
 
-  const emailInput=(event)=>{
-        setErrorMsg("");
-        setEmail(event.target.value);
-         
-  }
-  const passwordInput=(event)=>{
-      setErrorMsg("");
-      setPassword(event.target.value)
-  }
+  const emailInput = (event) => {
+    const value = event.target.value;
+    setEmail(value);
+    setErrors(prev => ({ ...prev, email: validateEmail(value) }));
+    setErrorMsg("");
+  };
 
-  const roleInput=(event)=>{
-      setErrorMsg("");
-      setRole(event.target.value)
-  }
+  const passwordInput = (event) => {
+    const value = event.target.value;
+    setPassword(value);
+    setErrors(prev => ({ ...prev, password: validatePassword(value) }));
+    setErrorMsg("");
+  };
+
+  const roleInput = (event) => {
+    const value = event.target.value;
+    setRole(value);
+    setErrorMsg("");
+    if (value === "admin") {
+      setErrors(prev => ({ ...prev, adminSecretKey: validateAdminSecretKey(adminSecretKey) }));
+    } else {
+      setErrors(prev => ({ ...prev, adminSecretKey: "" }));
+    }
+  };
+
+  const adminSecretKeyInput = (event) => {
+    const value = event.target.value;
+    setAdminSecretKey(value);
+    setErrors(prev => ({ ...prev, adminSecretKey: validateAdminSecretKey(value) }));
+    setErrorMsg("");
+  };
 
 
   const onSubmitSuccess = () => {
@@ -51,14 +128,34 @@ const Signup = () => {
 
   const signupForm = async (event) => {
     event.preventDefault();
+    
+    // Validate all fields
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    const adminSecretKeyError = validateAdminSecretKey(adminSecretKey);
+    
+    setErrors({
+      name: nameError,
+      email: emailError,
+      password: passwordError,
+      adminSecretKey: adminSecretKeyError
+    });
+    
+    if (nameError || emailError || passwordError || adminSecretKeyError) {
+      setShowErrorMsg(true);
+      setErrorMsg("Please fix the errors above before submitting");
+      return;
+    }
+    
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
     const url = `${BACKEND_URL}/auth/register`;
     const userDetails = { 
-      name, 
-      email, 
+      name: name.trim(), 
+      email: email.trim().toLowerCase(), 
       password, 
       role,
-      ...(role === "admin" && { adminSecretKey })
+      ...(role === "admin" && { adminSecretKey: adminSecretKey.trim() })
     };
 
     const options = {
@@ -67,13 +164,29 @@ const Signup = () => {
       body: JSON.stringify(userDetails),
     };
 
-    const response = await fetch(url, options);
-    const data = await response.json();
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
 
-    if (response.ok) {
-      onSubmitSuccess();
-    } else {
-      onSubmitFailure(data.message);
+      if (response.ok) {
+        onSubmitSuccess();
+      } else {
+        // Handle backend validation errors
+        if (data.errors && Array.isArray(data.errors)) {
+          const fieldErrors = {};
+          data.errors.forEach(err => {
+            fieldErrors[err.field] = err.message;
+          });
+          setErrors(prev => ({ ...prev, ...fieldErrors }));
+          setErrorMsg(data.message || "Validation failed");
+        } else {
+          setErrorMsg(data.message || "Registration failed");
+        }
+        setShowErrorMsg(true);
+      }
+    } catch (error) {
+      setErrorMsg("Network error. Please try again.");
+      setShowErrorMsg(true);
     }
   };
 
@@ -110,8 +223,13 @@ const Signup = () => {
             type="text"
             id="name"
             placeholder="John Doe"
-            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+            className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+              errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+            }`}
           />
+          {errors.name && (
+            <p className="text-red-400 text-xs mt-1">{errors.name}</p>
+          )}
         </div>
 
        
@@ -125,8 +243,13 @@ const Signup = () => {
             type="email"
             id="email"
             placeholder="you@example.com"
-            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+            className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+              errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+            }`}
           />
+          {errors.email && (
+            <p className="text-red-400 text-xs mt-1">{errors.email}</p>
+          )}
         </div>
 
        
@@ -140,8 +263,16 @@ const Signup = () => {
             type="password"
             id="password"
             placeholder="••••••••"
-            className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+            className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+              errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+            }`}
           />
+          {errors.password && (
+            <p className="text-red-400 text-xs mt-1">{errors.password}</p>
+          )}
+          {!errors.password && password && (
+            <p className="text-gray-400 text-xs mt-1">Must contain uppercase, lowercase, and a number</p>
+          )}
         </div>
 
         <div className="flex flex-col mb-5">
@@ -166,15 +297,17 @@ const Signup = () => {
             </label>
             <input
               value={adminSecretKey}
-              onChange={(event) => {
-                setErrorMsg("");
-                setAdminSecretKey(event.target.value);
-              }}
+              onChange={adminSecretKeyInput}
               type="password"
               id="adminSecretKey"
               placeholder="••••••••"
-              className="bg-gray-900/50 border-2 border-gray-700 p-3 sm:p-4 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition-all text-white placeholder-gray-500"
+              className={`bg-gray-900/50 border-2 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${
+                errors.adminSecretKey ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-gray-700 focus:border-red-600 focus:ring-red-600/30"
+              }`}
             />
+            {errors.adminSecretKey && (
+              <p className="text-red-400 text-xs mt-1">{errors.adminSecretKey}</p>
+            )}
           </div>
         )}
 

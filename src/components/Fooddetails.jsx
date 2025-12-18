@@ -195,36 +195,47 @@ const Fooddetails = () => {
                 key={pizza._id}
                 data-aos="zoom-in-up"
                 data-aos-delay={index * 100}
-                className="bg-white shadow-md rounded-2xl overflow-hidden 
-                transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-2
-                border-2 border-transparent hover:border-red-500
-                h-full flex flex-col"
+                className="bg-white shadow-xl rounded-3xl overflow-hidden 
+                transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-4
+                border-2 border-gray-200 hover:border-red-500
+                h-full flex flex-col group relative"
               >
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 z-10 pointer-events-none rounded-3xl"></div>
+                
                 {/* Image */}
-                <div className="relative overflow-hidden group h-48">
+                <div className="relative overflow-hidden h-56 sm:h-64">
                   <img
                     src={pizza.image}
                     alt={pizza.name}
-                    className="w-full h-full object-cover transform transition duration-500 group-hover:scale-110 group-hover:brightness-110"
+                    className="w-full h-full object-cover transform transition duration-700 group-hover:scale-125 group-hover:brightness-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  {pizza.popular && (
+                    <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl flex items-center gap-1">
+                      <span>🔥</span> Popular
+                    </div>
+                  )}
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col flex-grow">
-                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 line-clamp-2">{pizza.name}</h3>
-                  <p className="text-gray-600 text-sm mt-2 line-clamp-2 flex-grow">{pizza.description}</p>
+                <div className="p-6 flex flex-col flex-grow bg-gradient-to-b from-white to-gray-50">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-red-600 group-hover:to-orange-600 transition-all duration-300">
+                    {pizza.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-3 line-clamp-2 flex-grow leading-relaxed">{pizza.description}</p>
 
                   {/* Size Options */}
                   {(category === "Pizza") && (
-                    <div className="flex flex-wrap gap-2 mt-4">
+                    <div className="flex flex-wrap gap-2 mt-5">
                       {[["Regular", pizza.price.regular], ["Medium", pizza.price.medium], ["Large", pizza.price.large]].map(([sizeLabel, price]) => (
                         <button
                           key={sizeLabel}
                           onClick={() => setSize(sizeLabel.toLowerCase())}
-                          className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold transition-all ${
+                          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform hover:scale-105 ${
                             size === sizeLabel.toLowerCase()
-                              ? "bg-red-600 text-white"
-                              : "bg-gray-100 text-gray-700 hover:bg-red-100"
+                              ? "bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg scale-105"
+                              : "bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 border-2 border-gray-200"
                           }`}
                         >
                           {sizeLabel} ₹{price}
@@ -233,22 +244,32 @@ const Fooddetails = () => {
                     </div>
                   )}
 
-                  <p className="mt-4 text-lg font-bold text-red-600">₹{pizza.price.medium}</p>
+                  <div className="flex items-center justify-between mt-5 pt-4 border-t-2 border-gray-200">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Price</p>
+                      <p className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
+                        ₹{pizza.price.medium}
+                      </p>
+                    </div>
+                  </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3 mt-5">
+                  <div className="flex gap-3 mt-6">
                     <Link
                       to={`/food/${category}/${pizza._id}`}
-                      className="flex-1 text-center border-2 border-red-600 py-2 rounded-full font-semibold text-red-600 bg-white hover:bg-red-50 transition-all duration-300"
+                      className="flex-1 text-center border-2 border-red-600 py-3 rounded-xl font-bold text-red-600 bg-white hover:bg-red-50 hover:border-red-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                     >
                       View Details
                     </Link>
 
                     <button
                       onClick={() => addToCart(pizza._id)}
-                      className="flex-1 cursor-pointer text-center py-2 rounded-full font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-300 hover:shadow-lg"
+                      className="flex-1 cursor-pointer text-center py-3 rounded-xl font-bold text-white bg-gradient-to-r from-red-600 via-red-700 to-orange-600 hover:from-red-700 hover:via-red-800 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 shadow-lg relative overflow-hidden group/btn"
                     >
-                      Add to Cart
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        Add <span className="text-lg group-hover/btn:rotate-12 transition-transform">🛒</span>
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
                     </button>
                   </div>
                 </div>

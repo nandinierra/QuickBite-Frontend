@@ -131,12 +131,12 @@ const settings = {
 
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-50 to-white px-4 sm:px-6 md:px-8">
+    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white px-4 sm:px-6 md:px-8">
       <div className="container mx-auto max-w-7xl">
         
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            <span className="text-red-600">Most Popular</span> Dishes
+        <div className="text-center mb-16 sm:mb-20">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">Most Popular</span> Dishes
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Customer favorites from across all categories. These dishes are loved by everyone!
@@ -144,47 +144,48 @@ const settings = {
         </div>
 
         
-        <div className="popular-dishes-carousel mb-12">
+        <div className="popular-dishes-carousel mb-0">
           <Slider {...settings}>
 
             {popularDishes.map((dish) => (
               <div key={dish._id} className="px-3 sm:px-4 flex justify-center">
-                <div className="bg-white w-full max-w-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 border border-gray-100 hover:border-red-600 transform">
+                <div className="bg-white w-full max-w-sm rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-4 transition-all duration-300 border border-gray-200 hover:border-red-500 transform group">
                 
-                  <div className="relative h-40 sm:h-48 bg-gray-200 overflow-hidden group">
+                  <div className="relative h-44 sm:h-56 bg-gray-200 overflow-hidden">
                     <img
                       src={dish.image}
                       alt={dish.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-120 group-hover:brightness-110"
                     />
-                    <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full flex items-center shadow-lg font-semibold text-gray-800">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full flex items-center shadow-lg font-bold text-gray-800 border border-white/20">
                       <StarIcon />
-                      <span className="ml-1">{dish.rating}</span>
+                      <span className="ml-1.5">{dish.rating}</span>
                     </div>
-                    <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold flex items-center shadow-lg">
+                    <div className="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-bold flex items-center shadow-lg">
                       <FireIcon />
-                      <span className="ml-1">Trending</span>
+                      <span className="ml-1.5">Trending</span>
                     </div>
                   </div>
 
                   
-                  <div className="p-4 sm:p-5 flex flex-col h-56 sm:h-64">
-                    <div className="flex justify-between items-start gap-2 mb-2">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 line-clamp-2 flex-grow">{dish.name}</h3>
-                      <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold flex-shrink-0">
+                  <div className="p-5 sm:p-6 flex flex-col h-56 sm:h-64">
+                    <div className="flex justify-between items-start gap-3 mb-3">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 flex-grow group-hover:text-red-600 transition">{dish.name}</h3>
+                      <span className="bg-gradient-to-r from-red-50 to-orange-50 text-red-700 text-xs px-3 py-1 rounded-full font-semibold flex-shrink-0 border border-red-200">
                         {dish.category}
                       </span>
                     </div>
 
                     <p className="text-gray-600 text-sm line-clamp-2 flex-grow mb-4">{dish.description}</p>
 
-                    <div className="flex justify-between items-center gap-3 mt-auto">
+                    <div className="flex justify-between items-center gap-3 mt-auto pt-4 border-t border-gray-100">
                       <span className="text-2xl sm:text-3xl font-bold text-red-600">₹{dish.price.regular}</span>
                       <button
                         onClick={() => handleAddToCart(dish)}
-                        className="bg-gradient-to-r from-red-600 to-red-700 cursor-pointer hover:from-red-700 hover:to-red-800 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                        className="bg-gradient-to-r from-red-600 to-red-700 cursor-pointer hover:from-red-700 hover:to-red-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
-                        Add to Cart
+                        Add 🛒
                       </button>
                     </div>
                   </div>

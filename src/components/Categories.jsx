@@ -73,36 +73,36 @@ const Categories = () => {
           key={eachCategory.id}
           data-aos="fade-up"
           data-aos-delay={index * 100}
-          className="bg-white w-full max-w-xs rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-110 hover:-translate-y-3 hover:shadow-2xl hover:rotate-1 cursor-pointer border-2 border-gray-200 hover:border-red-600"
+          className="bg-white w-full max-w-xs rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-4 hover:shadow-2xl cursor-pointer border border-gray-200 hover:border-red-500 group"
         >
-          <div className="relative overflow-hidden group">
+          <div className="relative overflow-hidden h-48 sm:h-56">
             <img
-              className="h-40 sm:h-48 w-full object-cover transform transition duration-500 group-hover:scale-125 group-hover:brightness-110"
+              className="h-full w-full object-cover transform transition duration-500 group-hover:scale-130 group-hover:brightness-125"
               src={eachCategory.image}
               alt={eachCategory.name}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
           </div>
           
-          <div className="px-4 sm:px-5 py-4 sm:py-5">
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <h1 className="font-bold text-lg sm:text-xl text-gray-800">{eachCategory.name}</h1>
-              <div className="flex items-center gap-1 bg-yellow-100 px-2 py-1 rounded-full">
+          <div className="px-5 py-6 sm:py-7">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h1 className="font-bold text-lg sm:text-xl text-gray-800 group-hover:text-red-600 transition">{eachCategory.name}</h1>
+              <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-50 to-orange-50 px-3 py-1.5 rounded-full border border-yellow-200">
                 <StarRating rating={eachCategory.rating} />
-                <span className="text-xs sm:text-sm font-semibold text-yellow-700">
+                <span className="text-xs sm:text-sm font-bold text-yellow-700">
                   {eachCategory.rating}
                 </span>
               </div>
             </div>
             
-            <div className="flex justify-between items-center gap-3">
-              <p className="font-bold text-lg text-red-600">₹{eachCategory.price}</p>
+            <div className="flex justify-between items-center gap-3 pt-3 border-t border-gray-100">
+              <p className="font-bold text-lg sm:text-xl text-red-600">₹{eachCategory.price}</p>
               <Link to={`/food/${eachCategory.name}`} className="flex-1">
                 <button
                   type="button"
-                  className="w-full border-2 border-red-600 p-2 px-4 rounded-lg cursor-pointer text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2 px-4 rounded-xl cursor-pointer text-xs sm:text-sm font-bold text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
-                  View
+                  View 🔍
                 </button>
               </Link>
             </div>

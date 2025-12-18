@@ -65,12 +65,12 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex fixed top-0 left-0 w-full justify-between items-center z-20 px-4 sm:px-6 md:px-16 py-2 sm:py-3 transition-all duration-300 ${
+      className={`flex fixed top-0 left-0 w-full justify-between items-center z-20 px-4 sm:px-6 md:px-16 py-3 sm:py-4 transition-all duration-300 backdrop-blur-xl ${
         navbarBg
-          ? "bg-black/95 backdrop-blur-md border-b border-red-600/20"
+          ? "bg-black/95 shadow-2xl border-b border-red-600/40"
           : location.pathname === "/"
-          ? "bg-black/40 backdrop-blur-sm"
-          : "bg-black/95 backdrop-blur-md"
+          ? "bg-gradient-to-r from-black/30 to-black/20 shadow-lg"
+          : "bg-black/95 shadow-2xl"
       }`}
     >
       {/* Logo */}
@@ -79,13 +79,13 @@ const Navbar = () => {
           navigate("/", { replace: true });
           setMenuOpen(false);
         }}
-        className="h-10 sm:h-12 w-10 sm:w-12 rounded-full cursor-pointer hover:scale-110 transition-transform duration-300"
+        className="h-11 sm:h-13 w-11 sm:w-13 rounded-full cursor-pointer hover:scale-125 transition-transform duration-300 shadow-lg hover:shadow-red-600/50 hover:shadow-xl"
         src="https://res.cloudinary.com/doicvqkvb/image/upload/v1756198168/QuickBite_qxnvys.png"
         alt="QuickBite Logo"
       />
 
       {/* Desktop Menu */}
-      <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+      <div className="hidden md:flex items-center space-x-8 lg:space-x-10">
         {location.pathname === "/" && (
           <>
             <p
@@ -125,7 +125,7 @@ const Navbar = () => {
       </div>
 
       {/* Right Side (Cart + Profile + Logout) */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-4 sm:gap-6">
 
   {user && user.role === "customer" && (
     <div 
@@ -133,10 +133,10 @@ const Navbar = () => {
       onClick={() => navigate("/cart")}
     >
       <FontAwesomeIcon
-        className="text-xl sm:text-2xl text-white hover:text-red-400 transition-colors duration-300 group-hover:scale-110 transform"
+        className="text-xl sm:text-2xl text-white hover:text-red-400 transition-colors duration-300 group-hover:scale-125 transform"
         icon={faShoppingCart}
       />
-      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full hover:bg-red-700">
+      <span className="absolute -top-3 -right-3 bg-gradient-to-r from-red-600 to-red-700 text-white text-xs font-bold px-2 py-1 rounded-full hover:from-red-700 hover:to-red-800 shadow-lg group-hover:scale-110 transition-all">
         {cartLength}
       </span>
     </div>
@@ -146,17 +146,17 @@ const Navbar = () => {
     <div className="relative hidden md:block">
       <button
         onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-        className="flex items-center gap-2 text-white hover:text-red-400 transition-colors"
+        className="flex items-center gap-2 text-white hover:text-red-400 transition-colors duration-300 hover:scale-110 transform"
         title="User Profile"
       >
         {user.profilePicture ? (
           <img
             src={user.profilePicture}
             alt={user.email}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-orange-500 hover:border-red-400 transition-colors"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-orange-500 hover:border-red-400 transition-colors shadow-lg"
           />
         ) : (
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center border-2 border-orange-500 hover:border-red-400 transition-colors">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center border-2 border-orange-500 hover:border-red-400 transition-colors shadow-lg">
             <FontAwesomeIcon
               className="text-lg sm:text-xl text-white"
               icon={faUser}
@@ -166,27 +166,27 @@ const Navbar = () => {
       </button>
       
       {profileDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-black/95 backdrop-blur-md rounded-lg shadow-lg border border-red-600/20 overflow-hidden">
-          <div className="px-4 py-3 border-b border-red-600/20">
-            <p className="text-white font-semibold truncate">{user.email}</p>
+        <div className="absolute right-0 mt-3 w-52 bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-2xl border border-red-600/30 overflow-hidden animate-in fade-in-50 duration-200">
+          <div className="px-5 py-4 border-b border-red-600/20 bg-gradient-to-r from-red-600/10 to-transparent">
+            <p className="text-white font-bold truncate text-sm">{user.email}</p>
           </div>
           <button
             onClick={() => {
               navigate("/profile");
               setProfileDropdownOpen(false);
             }}
-            className="w-full text-left px-4 py-2 text-white hover:bg-red-600/20 transition-colors"
+            className="w-full text-left px-5 py-3 text-white hover:bg-red-600/20 transition-colors duration-300"
           >
-            My Profile
+            👤 My Profile
           </button>
           <button
             onClick={() => {
               logoutBtn();
               setProfileDropdownOpen(false);
             }}
-            className="w-full text-left px-4 py-2 text-white hover:bg-red-600/20 transition-colors border-t border-red-600/20"
+            className="w-full text-left px-5 py-3 text-white hover:bg-red-600/20 transition-colors duration-300 border-t border-red-600/20"
           >
-            Logout
+            🚪 Logout
           </button>
         </div>
       )}
@@ -196,14 +196,14 @@ const Navbar = () => {
   {user && !profileDropdownOpen && (
     <button
       onClick={logoutBtn}
-      className="hidden md:block cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+      className="hidden md:block cursor-pointer bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-2.5 rounded-full text-sm sm:text-base font-bold transition-all duration-300 hover:shadow-xl shadow-lg transform hover:scale-110"
     >
       Logout
     </button>
   )}
 
   <div
-    className="md:hidden text-white text-xl sm:text-2xl cursor-pointer hover:text-red-400 transition-colors"
+    className="md:hidden text-white text-2xl sm:text-2xl cursor-pointer hover:text-red-400 transition-colors duration-300 hover:scale-125 transform"
     onClick={() => setMenuOpen(!menuOpen)}
   >
     <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />

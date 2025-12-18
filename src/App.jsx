@@ -31,7 +31,7 @@ const App = () => {
     <CartProvider>
     <div className="flex flex-col justify-between min-h-screen">
       {!hiddenpath&&<Navbar/>}
-      <div className={hiddenpath ? "" : "pt-16 sm:pt-20"}>
+      <div className={hiddenpath ? "" : requiredPath === "/" ? "" : "pt-16 sm:pt-20"}>
         <Routes>
               <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
                <Route path="/signup" element={<Signup />} />
