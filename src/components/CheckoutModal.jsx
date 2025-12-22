@@ -18,19 +18,28 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
     postalCode: "",
   });
 
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      // Enforce lowercase for email
+      [name]: name === "email" ? value.toLowerCase() : value
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!formData.fullName || !formData.email || !formData.phone || 
-        !formData.address || !formData.city || !formData.postalCode) {
+
+    if (!formData.fullName || !formData.email || !formData.phone ||
+      !formData.address || !formData.city || !formData.postalCode) {
       toast.error("All fields are required", {
         position: "bottom-right",
         autoClose: 1500,
@@ -38,148 +47,42 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const createOrderResponse = await fetch(`${BACKEND_URL}/orders/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          deliveryDetails: formData,
-          notes: { description: "Order from QuickBite app" }
-        }),
-      });
-
-      const orderData = await createOrderResponse.json();
-
-      if (!createOrderResponse.ok) {
-        toast.error(orderData.message || "Failed to create order", {
-          position: "bottom-right",
-          autoClose: 1500,
-        });
-        setLoading(false);
-        return;
-      }
-
-      const { razorpayOrderId, amount } = orderData.order;
-
-      const options = {
-        key: "rzp_test_RsaGeH6na2LuO4",
-        amount: amount * 100,
-        currency: "INR",
-        name: "QuickBite",
-        description: "Food Order Payment",
-        order_id: razorpayOrderId,
-        prefill: {
-          name: formData.fullName,
-          email: formData.email,
-          contact: formData.phone,
-        },
-        handler: async (response) => {
-          try {
-            const verifyResponse = await fetch(`${BACKEND_URL}/orders/verify-payment`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-              }),
-            });
-
-            const verifyData = await verifyResponse.json();
-
-            if (!verifyResponse.ok) {
-              toast.error(verifyData.message || "Payment verification failed", {
-                position: "bottom-right",
-                autoClose: 1500,
-              });
-              setTimeout(() => {
-                onClose();
-                navigate("/cart", { replace: true });
-              }, 500);
-              return;
-            }
-
-            toast.success("Order placed successfully! 🎉", {
-              position: "bottom-right",
-              autoClose: 2000,
-            });
-
-            await handleClearCart();
-            setFormData({
-              fullName: "",
-              email: "",
-              phone: "",
-              address: "",
-              city: "",
-              postalCode: "",
-            });
-            setTimeout(() => {
-              onClose();
-              navigate("/cart", { replace: true });
-            }, 500);
-          } catch (error) {
-            console.error("Payment verification error:", error);
-            toast.error("Payment verification failed", {
-              position: "bottom-right",
-              autoClose: 1500,
-            });
-            setTimeout(() => {
-              onClose();
-              navigate("/cart", { replace: true });
-            }, 500);
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            setLoading(false);
-            toast.info("Payment cancelled", {
-              position: "bottom-right",
-              autoClose: 1500,
-            });
-            onClose();
-            navigate("/cart");
-          }
-        }
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-      setLoading(false);
-    } catch (error) {
-      console.error("Checkout error:", error);
-      toast.error("Something went wrong. Please try again.", {
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address", {
         position: "bottom-right",
         autoClose: 1500,
       });
-      setLoading(false);
+      return;
     }
+
+    // Close modal and navigate to payment page with data
+    onClose();
+    navigate('/payment', {
+      state: {
+        formData,
+        cartTotal
+      }
+    });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-red-600 text-white p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Delivery Details</h2>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="glass-panel rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in border border-white/10">
+        <div className="sticky top-0 bg-gradient-to-r from-primary to-red-700 text-white p-6 flex justify-between items-center rounded-t-3xl border-b border-white/10">
+          <h2 className="text-lg sm:text-xl font-bold font-playfair">Delivery Details</h2>
           <button
             onClick={onClose}
-            className="text-2xl hover:scale-110 transition-transform"
+            className="text-2xl hover:scale-110 transition-transform text-white/80 hover:text-white"
           >
             ✕
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 animate-fade-in-up">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               Full Name
             </label>
             <input
@@ -187,14 +90,14 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               name="fullName"
               value={formData.fullName}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all text-sm"
               placeholder="Enter your name"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               Email
             </label>
             <input
@@ -202,14 +105,14 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all text-sm"
               placeholder="Enter your email"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               Phone Number
             </label>
             <input
@@ -217,21 +120,21 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all text-sm"
               placeholder="Enter your phone number"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               Delivery Address
             </label>
             <textarea
               name="address"
               value={formData.address}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 resize-none"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all resize-none text-sm"
               placeholder="Enter your delivery address"
               rows={3}
               required
@@ -239,7 +142,7 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               City
             </label>
             <input
@@ -247,14 +150,14 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               name="city"
               value={formData.city}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all text-sm"
               placeholder="Enter your city"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-300 mb-2">
               Postal Code
             </label>
             <input
@@ -262,16 +165,16 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
               name="postalCode"
               value={formData.postalCode}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border-2 border-white/10 rounded-xl bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:bg-black/60 transition-all text-sm"
               placeholder="Enter your postal code"
               required
             />
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 mt-6">
+          <div className="bg-white/5 rounded-2xl p-4 mt-6 border border-white/10">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold text-gray-700">Order Total:</span>
-              <span className="text-2xl font-bold text-red-600">₹{cartTotal}</span>
+              <span className="text-sm sm:text-base font-semibold text-gray-300">Order Total:</span>
+              <span className="text-xl sm:text-2xl font-bold text-primary">₹{cartTotal}</span>
             </div>
           </div>
 
@@ -279,14 +182,14 @@ const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-colors"
+              className="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-300 hover:scale-105 text-sm border border-white/10"
               disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+              className="flex-1 bg-gradient-to-r from-primary to-orange-600 hover:from-red-600 hover:to-orange-700 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 text-sm shadow-lg border border-transparent"
               disabled={loading}
             >
               {loading ? "Processing..." : "Pay Now"}

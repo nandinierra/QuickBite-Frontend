@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import { cartReducer, initialState } from "../reducer/cartReducer.jsx";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify"
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
@@ -9,14 +9,14 @@ const CartContext = createContext();
 
 
 export const CartProvider = ({ children }) => {
- 
+
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tokenState, setTokenState] = useState(() => Cookies.get("jwt_token"));
   const token = tokenState;
-  
+
   // Verify user and fetch user details on mount or when token changes
   useEffect(() => {
     const verifyUserToken = async () => {
@@ -29,10 +29,11 @@ export const CartProvider = ({ children }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-          
+
           if (response.ok) {
             const result = await response.json();
             setUser(result.user);
+            setIsLoading(false);
           } else {
             // Token is invalid
             Cookies.remove("jwt_token");
@@ -46,12 +47,12 @@ export const CartProvider = ({ children }) => {
       } else {
         setUser(null);
       }
-      setIsLoading(false);
+
     };
-    
+
     verifyUserToken();
   }, [token]);
-  
+
   const fetchCartItems = useCallback(async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/cart/getItems`, {
@@ -65,10 +66,10 @@ export const CartProvider = ({ children }) => {
       const result = await response.json();
       console.log("Cart fetched from backend:", result);
       console.log("Cart items count:", result?.data?.foodItems?.length || 0);
-      
+
       if (response.ok) {
         // Backend returns { data, length }, dispatch expects the full response
-        dispatch({ type: "SET_CART", payload: result });  
+        dispatch({ type: "SET_CART", payload: result });
       } else {
         console.error("Failed to fetch cart:", result.message);
         // If cart fetch fails, initialize with empty cart
@@ -84,20 +85,20 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (!hasInitialized && token) {
       fetchCartItems();
-      
+
       setHasInitialized(true);
     }
   }, [token, hasInitialized, fetchCartItems]);
 
- 
-  
+
+
   const updateQuantity = async (itemId, action) => {
     try {
       console.log("updateQuantity called:", { itemId, action, cartItems: state.cart.data.foodItems.length });
-      
+
       // Filter to only valid items (where itemId is not null)
       const validItems = state.cart.data.foodItems.filter(item => item?.itemId);
-      
+
       // Defensive check for null itemId or missing items
       const foodItem = validItems.find(item => item?.itemId?._id === itemId);
       if (!foodItem) {
@@ -163,7 +164,7 @@ export const CartProvider = ({ children }) => {
   const handleDelete = async (itemId) => {
     try {
       console.log("handleDelete called:", { itemId });
-      
+
       // Check if item exists with valid itemId
       const itemExists = state.cart.data.foodItems.some(item => item?.itemId?._id === itemId);
       if (!itemExists) {
@@ -216,11 +217,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  
-  const handleClearCart = async () => {
+
+  const handleClearCart = async (showToast = true) => {
     try {
-      console.log("handleClearCart called");
-      
+      console.log("handleClearCart called", { showToast });
+
       // Optimistically clear local state
       dispatch({ type: "CLEAR_CART" });
 
@@ -238,25 +239,33 @@ export const CartProvider = ({ children }) => {
         console.error("Failed to clear cart on backend:", result);
         // Restore cart from backend on error
         await fetchCartItems();
-        toast.error(result.message || "Failed to clear cart", {
-          position: "bottom-right",
-          autoClose: 1500,
-        });
+
+        if (showToast === true) {
+          toast.error(result.message || "Failed to clear cart", {
+            position: "bottom-right",
+            autoClose: 1500,
+          });
+        }
         return;
       }
 
-      toast.success("Cart cleared successfully!", {
-        position: "bottom-right",
-        autoClose: 1500,
-      });
+      if (showToast === true) {
+        toast.success("Cart cleared successfully!", {
+          position: "bottom-right",
+          autoClose: 1500,
+        });
+      }
     } catch (error) {
       console.error("Error clearing cart:", error);
       // Restore cart from backend on error
       await fetchCartItems();
-      toast.error("Failed to clear cart", {
-        position: "bottom-right",
-        autoClose: 1500,
-      });
+
+      if (showToast === true) {
+        toast.error("Failed to clear cart", {
+          position: "bottom-right",
+          autoClose: 1500,
+        });
+      }
     }
   };
 
@@ -285,6 +294,41 @@ export const CartProvider = ({ children }) => {
 
       console.log("Adding to cart:", { itemData, isNewItem, tokenExists: !!token });
 
+      // Optimistic UI Update
+      const optimisticItem = {
+        _id: `temp-${Date.now()}`, // Temporary ID
+        itemId: {
+          _id: itemData.itemId,
+          name: "Item Added", // We don't have full details here unless passed, but that's okay for count/existence
+          // Ideally we would pass the full item object to addItemToCart to display better empty states if needed
+          // But for now, we just want to update the cart length/state
+        },
+        quantity: itemData.quantity,
+        size: itemData.size,
+        price: 0, // Placeholder
+      };
+
+      if (existingItem) {
+        // If item exists, we are essentially increasing quantity (or adding duplicate line item depending on logic, 
+        // but backend usually merges. Here we assume merge for simplicity or just add as new line in local state if unmatched size)
+
+        // Actually, for optimistic add, if we don't know if backend merges, safer to just ADD ITEM locally. 
+        // Or better yet, just trust the backend response usually? 
+        // User requested instant update.
+
+        // Let's Dispatch ADD_ITEM effectively for the visual feedback even if it might be merged later
+        // But better: if we pass the full item object from ViewDetails, we can do this properly.
+        // For now, let's just increment length or add to list to trigger UI update.
+
+        const newQuantity = existingItem.quantity + itemData.quantity;
+        dispatch({ type: "UPDATE_QUANTITY", payload: { itemId: itemData.itemId, quantity: newQuantity } });
+      } else {
+        dispatch({ type: "ADD_ITEM", payload: optimisticItem });
+      }
+
+      console.log("Optimistically updated cart");
+
+
       // Send to backend
       const response = await fetch(`${BACKEND_URL}/cart/addItem`, {
         method: "POST",
@@ -301,13 +345,18 @@ export const CartProvider = ({ children }) => {
 
       if (!response.ok) {
         console.error("Backend error adding to cart:", result);
+        // Revert on failure by fetching valid state
+        await fetchCartItems();
         return { success: false, isNewItem };
       }
 
-      // Fetch updated cart from backend to ensure consistency
-      await fetchCartItems();
+      // Fetch updated cart from backend to ensure consistency (background sync)
+      // We don't await this to keep UI responsive, or we do if we want strict consistency.
+      // Since user wants SPEED, we let this happen in background or after small delay
+      fetchCartItems();
+
       return { success: true, isNewItem };
-    } catch(err) {
+    } catch (err) {
       console.error("Error adding to cart (catch block):", err);
       // Refetch to restore state on error
       await fetchCartItems();
@@ -366,6 +415,7 @@ export const CartProvider = ({ children }) => {
         cartLength: state.length,
         user,
         isLoading,
+        setIsLoading,
         logout,
         token,
         updateTokenState,

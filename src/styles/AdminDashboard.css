@@ -152,21 +152,21 @@
 .form-group select:focus {
   outline: none;
   border-color: #dc2626;
-  background-color: #fff5f5;
+  /* background-color: #fff5f5; Removed to allow glass style */
 }
 
 .form-group input.error,
 .form-group textarea.error,
 .form-group select.error {
   border-color: #ff6b6b;
-  background-color: #fff5f5;
+  /* background-color: #fff5f5; Removed to allow glass style */
 }
 
 .form-group input.error:focus,
 .form-group textarea.error:focus,
 .form-group select.error:focus {
   border-color: #ff6b6b;
-  background-color: #fff5f5;
+  /* background-color: #fff5f5; Removed to allow glass style */
 }
 
 .error-message {

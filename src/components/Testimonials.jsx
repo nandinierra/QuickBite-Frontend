@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faQuoteLeft } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -50,122 +50,120 @@ const reviews = [
   },
 ];
 
-const Testimonials = () => {
-  // keep a ref and track window width so we can force re-init of the slider on mount/resize
-  const sliderRef = useRef(null);
-  const [width, setWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
+const NextArrow = ({ onClick }) => {
+  return (
+    <div
+      className="absolute right-0 top-1/2 -translate-y-1/2 z-20 cursor-pointer glass-panel text-white hover:bg-primary hover:text-white rounded-full p-3 shadow-lg transition-all duration-300 -mr-2 sm:-mr-12 border border-white/10 hover:border-primary"
+      onClick={onClick}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
+    </div>
   );
+};
+
+const PrevArrow = ({ onClick }) => {
+  return (
+    <div
+      className="absolute left-0 top-1/2 -translate-y-1/2 z-20 cursor-pointer glass-panel text-white hover:bg-primary hover:text-white rounded-full p-3 shadow-lg transition-all duration-300 -ml-2 sm:-ml-12 border border-white/10 hover:border-primary"
+      onClick={onClick}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </div>
+  );
+};
+
+const Testimonials = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const onResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   const settings = {
-    dots: false,
-    autoplay: true,
-    speed: 500,
+    dots: true,
     infinite: true,
-    slidesToShow: 4,
+    speed: 800,
+    slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
-    swipeToSlide: true,
-    touchMove: true,
-    adaptiveHeight: true,
+    autoplay: true,
+    autoplaySpeed: 4500,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    pauseOnHover: true,
+    cssEase: "cubic-bezier(0.87, 0, 0.13, 1)",
     responsive: [
       {
-        // <= 1200px: show 3
-        breakpoint: 1200,
-        settings: { slidesToShow: 3, slidesToScroll: 1, arrows: true },
-      },
-      {
-        // <= 1024px: show 2
-        breakpoint: 1024,
-        settings: { slidesToShow: 2, slidesToScroll: 1, arrows: true },
-      },
-      {
-        // <= 768px: show 2 but hide arrows (better touch UX)
-        breakpoint: 768,
-        settings: { slidesToShow: 2, slidesToScroll: 1, arrows: false },
-      },
-      {
-        // <= 480px: single slide, arrows off, full swipe support
-        breakpoint: 480,
+        breakpoint: 640,
         settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
           arrows: false,
-          centerMode: false,
-        },
-      },
-    ],
+          dots: true
+        }
+      }
+    ]
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 bg-white">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">⭐ What Our Customers Say</span>
+
+        <div className="text-center mb-12 sm:mb-16 animate-fade-in">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 text-white tracking-tight">
+            What Our <span className="text-gradient">Customers Say</span>
           </h2>
-          <p className="text-gray-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto">
-            Real experiences from food lovers who trust QuickBite
+          <div className="h-1.5 w-24 bg-gradient-to-r from-red-500 to-orange-500 mx-auto rounded-full mb-6"></div>
+          <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto">
+            See why thousands of food lovers trust QuickBite for their daily meals.
           </p>
         </div>
 
-        {/* Testimonials Carousel */}
-        <div className="overflow-hidden">
+        <div className="max-w-4xl mx-auto relative px-4 sm:px-12">
           {mounted && (
-            <Slider key={width} ref={sliderRef} {...settings}>
+            <Slider {...settings}>
               {reviews.map((review) => (
-                <div key={review.id} className="px-3 sm:px-4 min-w-0 group">
-                  <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl p-8 sm:p-10 text-center border-2 border-gray-200 hover:border-red-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 h-full flex flex-col">
-                    
-                    {/* Top Accent */}
-                    <div className="h-1 w-16 bg-gradient-to-r from-red-600 to-red-400 rounded-full mx-auto mb-8 group-hover:w-20 transition-all"></div>
-                    
-                    {/* Avatar */}
-                    <div className="relative mb-10">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-400 to-red-600 blur-xl opacity-0 group-hover:opacity-40 transition-all"></div>
+                <div key={review.id} className="outline-none py-10 px-2">
+                  <div className="glass-panel rounded-[2.5rem] shadow-2xl p-8 sm:p-12 text-center mx-auto max-w-3xl relative transform transition-all duration-500 hover:scale-[1.02] border border-white/10">
+
+                    <div className="absolute top-6 left-8 text-white/10 text-6xl -z-0">
+                      <FontAwesomeIcon icon={faQuoteLeft} />
+                    </div>
+
+                    <div className="relative inline-block mb-6">
+                      <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-20 transform translate-y-2"></div>
                       <img
                         src={review.photo}
                         alt={review.name}
-                        className="w-28 h-28 sm:w-32 sm:h-32 rounded-full mx-auto border-4 border-white shadow-xl group-hover:scale-110 transition-transform relative z-10"
+                        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white/10 shadow-lg object-cover relative z-10 mx-auto"
                       />
-                      {/* <div className="absolute -bottom-1 -right-1 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
-                        ⭐
-                      </div> */}
                     </div>
 
-                    {/* Rating Stars */}
-                    <div className="flex justify-center gap-2 mb-8">
+                    <div className="flex justify-center gap-1 mb-6">
                       {[...Array(5)].map((_, i) => (
                         <FontAwesomeIcon
                           key={i}
                           icon={faStar}
-                          className={`h-6 w-6 sm:h-7 sm:w-7 transition-all transform group-hover:scale-125 group-hover:rotate-12 ${
-                            i < review.rating ? "text-yellow-400 drop-shadow-lg" : "text-gray-300"
-                          }`}
+                          className={`text-lg ${i < review.rating ? "text-secondary drop-shadow-sm" : "text-gray-600"
+                            }`}
                         />
                       ))}
                     </div>
 
-                    {/* Comment */}
-                    <p className="text-gray-700 italic mb-8 leading-relaxed text-sm sm:text-base flex-grow font-medium">
+                    <blockquote className="text-xl sm:text-2xl text-gray-200 italic font-medium leading-relaxed mb-8 relative z-10 font-playfair">
                       "{review.comment}"
-                    </p>
+                    </blockquote>
 
-                    {/* Name and Badge */}
-                    <div className="pt-8 border-t-2 border-gray-200 group-hover:border-red-300 transition">
-                      <p className="font-bold text-lg sm:text-xl text-gray-900 group-hover:text-red-600 transition mb-2">{review.name}</p>
-                      <div className="inline-block bg-red-50 border border-red-200 rounded-full px-4 py-1 group-hover:bg-red-100 transition">
-                        <p className="text-xs font-semibold text-red-600">✓ Verified Customer</p>
+                    <div>
+                      <h4 className="text-xl font-bold text-white mb-2">{review.name}</h4>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="bg-primary/20 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-primary/30">
+                          ✓ Verified Customer
+                        </span>
                       </div>
                     </div>
+
                   </div>
                 </div>
               ))}
@@ -173,6 +171,22 @@ const Testimonials = () => {
           )}
         </div>
       </div>
+
+      <style>{`
+        .slick-dots {
+            bottom: -40px;
+        }
+        .slick-dots li button:before {
+          font-size: 12px;
+          color: #cbd5e1;
+          opacity: 1;
+          transition: all 0.3s;
+        }
+        .slick-dots li.slick-active button:before {
+          color: #dc2626;
+          font-size: 14px;
+        }
+      `}</style>
     </section>
   );
 };

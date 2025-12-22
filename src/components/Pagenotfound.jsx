@@ -7,8 +7,8 @@ const PageNotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white via-red-50 to-yellow-100 px-6 text-center">
-      
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#121212] via-black to-[#1E1E1E] px-6 text-center">
+
       {/* Animated 404 */}
       <motion.h1
         initial={{ scale: 0.8, opacity: 0 }}
@@ -24,7 +24,7 @@ const PageNotFound = () => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.7 }}
-        className="text-2xl sm:text-3xl font-bold text-gray-800 mt-2"
+        className="text-2xl sm:text-3xl font-bold text-white mt-2 font-head"
       >
         Oops! The page is missing... maybe it got eaten 🍕
       </motion.p>
@@ -34,7 +34,7 @@ const PageNotFound = () => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.7, duration: 0.7 }}
-        className="text-gray-600 mt-3 text-sm sm:text-base"
+        className="text-gray-400 mt-3 text-sm sm:text-base"
       >
         Don’t worry, our chef will cook it back soon.
       </motion.p>
@@ -54,7 +54,7 @@ const PageNotFound = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => navigate("/")}
-        className="flex items-center gap-2 bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
+        className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:shadow-primary/50 transition-all duration-300"
       >
         <FontAwesomeIcon icon={faHome} />
         Go Back Home

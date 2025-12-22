@@ -9,6 +9,7 @@ export default defineConfig({
   ],
   build: {
     chunkSizeWarningLimit: 1000,
+    outDir: 'dist',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -17,6 +18,11 @@ export default defineConfig({
           'icons': ['@fortawesome/react-fontawesome', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-brands-svg-icons']
         }
       }
+    }
+  },
+  server: {
+    fs: {
+      strict: false
     }
   }
 })

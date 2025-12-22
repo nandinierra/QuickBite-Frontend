@@ -11,7 +11,7 @@ const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
 
 const PopularDishes = () => {
-  const {addItemToCart} = useCart();
+  const { addItemToCart } = useCart();
   const [popularDishes, setPopularDishes] = useState([]);
 
   useEffect(() => {
@@ -29,40 +29,40 @@ const PopularDishes = () => {
 
 
   const handleAddToCart = async (dish) => {
-   
-      try {
-        const itemData = {  itemId: dish._id, quantity: 1, size: "regular" };
-        const result=  await addItemToCart(itemData);
 
-        if (result.success) {
-             if (result.isNewItem) {
-            toast.success(`Item successfully added to cart!`, {
+    try {
+      const itemData = { itemId: dish._id, quantity: 1, size: "regular" };
+      const result = await addItemToCart(itemData);
+
+      if (result.success) {
+        if (result.isNewItem) {
+          toast.success(`Item successfully added to cart!`, {
             position: "bottom-right",
             autoClose: 1500,
           });
-          } else {
+        } else {
           toast.info(`Quantity updated in cart!`, {
             position: "bottom-right",
             autoClose: 1500,
           });
-          }
-        } 
-         else {
-          toast.error("Failed to update cart", {
+        }
+      }
+      else {
+        toast.error("Failed to update cart", {
           position: "top-right",
           autoClose: 1500,
         });
-        }
-   
-      } catch (err) {
-        console.log("Error adding to cart:", err);
-        toast.error("Failed to add item to cart", {
+      }
+
+    } catch (err) {
+      console.log("Error adding to cart:", err);
+      toast.error("Failed to add item to cart", {
         position: "top-right",
         autoClose: 1500,
-        });
-      }
-    
- 
+      });
+    }
+
+
   };
 
 
@@ -84,73 +84,73 @@ const PopularDishes = () => {
   );
 
 
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 600,
-  slidesToShow: 4, 
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 3000,
-  pauseOnHover: true,
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 600,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
 
-  responsive: [
-    {
-      breakpoint: 1536, // ≤1536px
-      settings: { slidesToShow: 4 },
-    },
-    {
-      breakpoint: 1280, // ≤1280px
-      settings: { slidesToShow: 3 },
-    },
-    {
-      breakpoint: 1024, // ≤1024px
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 900, // extra safety layer for tablets
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 768, // ≤768px
-      settings: {
-        slidesToShow: 1,
-        centerMode: true,
-        centerPadding: "40px",
+    responsive: [
+      {
+        breakpoint: 1536, // ≤1536px
+        settings: { slidesToShow: 4 },
       },
-    },
-    {
-      breakpoint: 480, // ≤480px
-      settings: {
-        slidesToShow: 1,
-        centerMode: true,
+      {
+        breakpoint: 1280, // ≤1280px
+        settings: { slidesToShow: 3 },
       },
-    },
-  ],
-};
+      {
+        breakpoint: 1024, // ≤1024px
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 900, // extra safety layer for tablets
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 768, // ≤768px
+        settings: {
+          slidesToShow: 1,
+          centerMode: true,
+          centerPadding: "40px",
+        },
+      },
+      {
+        breakpoint: 480, // ≤480px
+        settings: {
+          slidesToShow: 1,
+          centerMode: true,
+        },
+      },
+    ],
+  };
 
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white px-4 sm:px-6 md:px-8">
+    <section className="sm:py-8 bg-transparent px-4 sm:px-6">
       <div className="container mx-auto max-w-7xl">
-        
-        <div className="text-center mb-16 sm:mb-20">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">Most Popular</span> Dishes
+
+        <div className="text-center mb-16 sm:mb-20 animate-fade-in">
+          <h2 className="sm:text-4xl font-bold text-white mb-4 animate-fade-in">
+            <span className="text-gradient">Most Popular</span> Dishes
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed animate-fade-in-up">
             Customer favorites from across all categories. These dishes are loved by everyone!
           </p>
         </div>
 
-        
+
         <div className="popular-dishes-carousel mb-0">
           <Slider {...settings}>
 
             {popularDishes.map((dish) => (
-              <div key={dish._id} className="px-3 sm:px-4 flex justify-center">
-                <div className="bg-white w-full max-w-sm rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-4 transition-all duration-300 border border-gray-200 hover:border-red-500 transform group">
-                
+              <div key={dish._id} className="px-3 sm:px-4 flex justify-center py-4">
+                <div className="glass-panel w-full max-w-sm rounded-3xl overflow-hidden hover:shadow-2xl hover:-translate-y-4 transition-all duration-300 border border-white/10 hover:border-primary/50 transform group">
+
                   <div className="relative h-44 sm:h-56 bg-gray-200 overflow-hidden">
                     <img
                       src={dish.image}
@@ -168,19 +168,19 @@ const settings = {
                     </div>
                   </div>
 
-                  
+
                   <div className="p-5 sm:p-6 flex flex-col h-56 sm:h-64">
                     <div className="flex justify-between items-start gap-3 mb-3">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 flex-grow group-hover:text-red-600 transition">{dish.name}</h3>
-                      <span className="bg-gradient-to-r from-red-50 to-orange-50 text-red-700 text-xs px-3 py-1 rounded-full font-semibold flex-shrink-0 border border-red-200">
+                      <h3 className="text-lg sm:text-xl font-bold text-white line-clamp-2 flex-grow group-hover:text-primary transition">{dish.name}</h3>
+                      <span className="bg-primary/20 text-primary text-xs px-3 py-1 rounded-full font-semibold flex-shrink-0 border border-primary/30">
                         {dish.category}
                       </span>
                     </div>
 
-                    <p className="text-gray-600 text-sm line-clamp-2 flex-grow mb-4">{dish.description}</p>
+                    <p className="text-gray-400 text-sm line-clamp-2 flex-grow mb-4">{dish.description}</p>
 
-                    <div className="flex justify-between items-center gap-3 mt-auto pt-4 border-t border-gray-100">
-                      <span className="text-2xl sm:text-3xl font-bold text-red-600">₹{dish.price.regular}</span>
+                    <div className="flex justify-between items-center gap-3 mt-auto pt-4 border-t border-white/10">
+                      <span className="text-2xl sm:text-3xl font-bold text-primary">₹{dish.price.regular}</span>
                       <button
                         onClick={() => handleAddToCart(dish)}
                         className="bg-gradient-to-r from-red-600 to-red-700 cursor-pointer hover:from-red-700 hover:to-red-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"

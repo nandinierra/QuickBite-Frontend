@@ -1,19 +1,20 @@
 import { useState } from "react";
-import {useCart} from "../context/context";
+import { Trash2 } from "lucide-react";
+import { useCart } from "../context/context";
 import CheckoutModal from "./CheckoutModal";
 
 const Cart = () => {
-   const [showCheckout, setShowCheckout] = useState(false);
-   const {
+  const [showCheckout, setShowCheckout] = useState(false);
+  const {
     cart,
     loading,
     updateQuantity,
     handleDelete,
     handleClearCart,
-    isLoading} = useCart();
-   
+    isLoading } = useCart();
 
-  
+
+
 
   const handleOrderNow = () => {
     if (!cart?.data?.foodItems || cart.data.foodItems.length === 0) {
@@ -21,9 +22,9 @@ const Cart = () => {
     }
     setShowCheckout(true);
   };
-  
+
   console.log("Cart state:", { cart, loading, isLoading });
-  
+
   // Show loading only during initial fetch or explicit loading state
   if (loading || isLoading) {
     return (
@@ -65,23 +66,24 @@ const Cart = () => {
 
 
   return (
-    <div className="max-w-6xl mx-auto mb-16 mt-24 p-4 sm:p-6 md:p-10 bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-2xl">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-gray-900">Your Cart 🛒</h1>
-        <p className="text-gray-600 text-lg">{cartItems.length} items ready for delivery</p>
+    <div className="max-w-6xl mx-auto mb-16 mt-24 p-4 sm:p-6 md:p-10 glass-panel rounded-3xl shadow-2xl border border-white/10">
+      <div className="text-center mb-12 animate-fade-in">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-3 text-white animate-fade-in font-playfair">Your Cart 🛒</h1>
+        <p className="text-gray-400 text-base animate-fade-in-up">{cartItems.length} items ready for delivery</p>
       </div>
-      <CheckoutModal 
-        isOpen={showCheckout} 
+      <CheckoutModal
+        isOpen={showCheckout}
         onClose={() => setShowCheckout(false)}
         cartTotal={total}
         cartItems={cartItems}
       />
 
       <div className="space-y-5 sm:space-y-6">
-        {cartItems.filter(item => item.itemId).map((item) => (
+        {cartItems.filter(item => item.itemId).map((item, index) => (
           <div
             key={item.itemId?._id || Math.random()}
-            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 bg-white p-5 sm:p-7 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-gradient-to-b from-red-600 to-red-400 hover:border-red-700 group"
+            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 glass-panel p-5 sm:p-7 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-l-primary hover:border-l-primary text-white group animate-fade-in-up border-y border-r border-white/10"
+            style={{ animationDelay: `${index * 100}ms` }}
           >
             <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:flex-1">
               <img
@@ -90,46 +92,47 @@ const Cart = () => {
                 className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl shadow-md flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
               />
               <div className="flex-1">
-                <h2 className="font-bold text-lg sm:text-2xl text-gray-900 group-hover:text-red-600 transition">
+                <h2 className="font-bold text-lg sm:text-2xl text-white group-hover:text-primary transition font-outfit">
                   {item.itemId?.name}
                 </h2>
-                <p className="text-gray-600 text-sm mt-2">Size: <span className="font-semibold text-gray-800">{item.size}</span></p>
-                <p className="text-red-600 font-bold mt-3 text-xl">
+                <p className="text-gray-400 text-sm mt-2">Size: <span className="font-semibold text-gray-300">{item.size}</span></p>
+                <p className="text-primary font-bold mt-3 text-xl">
                   ₹{item.itemId?.price?.[item.size?.toLowerCase()] || item.itemId?.price?.regular}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              <div className="flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl p-2 sm:p-3 flex-1 sm:flex-none border border-gray-200">
+              <div className="flex items-center gap-1 sm:gap-2 bg-black/40 rounded-xl p-2 sm:p-3 flex-1 sm:flex-none border border-white/10">
                 <button
                   onClick={() => updateQuantity(item.itemId._id, "decrease")}
-                  className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold transition-all hover:scale-110 shadow-md"
+                  className="bg-primary cursor-pointer hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold transition-all hover:scale-110 shadow-md"
                 >
                   −
                 </button>
-                <span className="font-bold text-lg text-gray-900 min-w-[40px] text-center">{item.quantity}</span>
+                <span className="font-bold text-lg text-white min-w-[40px] text-center">{item.quantity}</span>
                 <button
                   onClick={() => updateQuantity(item.itemId._id, "increase")}
-                  className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold transition-all hover:scale-110 shadow-md"
+                  className="bg-primary cursor-pointer hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold transition-all hover:scale-110 shadow-md"
                 >
                   +
                 </button>
               </div>
               <button
                 onClick={() => handleDelete(item.itemId._id)}
-                className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-sm sm:text-base font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all duration-300 shadow-lg hover:shadow-red-500/30 group/delete"
+                title="Remove Item"
               >
-                🗑️ Remove
+                <Trash2 size={20} className="group-hover/delete:scale-110 transition-transform" />
               </button>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-8 mt-12 bg-gradient-to-r from-red-50 to-orange-50 p-6 sm:p-8 rounded-2xl shadow-xl border-2 border-red-200 group hover:border-red-400 transition">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-          Total: <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">₹{total}</span>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-8 mt-12 glass-panel p-6 sm:p-8 rounded-2xl shadow-xl border border-white/10 group hover:border-primary/50 transition">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white font-playfair">
+          Total: <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-500">₹{total}</span>
         </h2>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <button
@@ -142,13 +145,13 @@ const Cart = () => {
             onClick={handleOrderNow}
             className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 cursor-pointer hover:from-green-700 hover:to-green-800 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold transition-all hover:shadow-xl shadow-lg transform hover:scale-105"
           >
-            Order Now 🚀
+            Order Now
           </button>
         </div>
-      </div> 
+      </div>
 
     </div>
-  ); 
+  );
 
 };
 
