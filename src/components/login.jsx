@@ -1,5 +1,5 @@
 import { useNavigate, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { useCart } from "../context/context";
 
@@ -10,6 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingText, setLoadingText] = useState("Sign In");
 
   // Field-level validation errors
   const [errors, setErrors] = useState({
@@ -108,6 +110,14 @@ const Login = () => {
       return;
     }
 
+    setIsSubmitting(true);
+    setLoadingText("Signing In...");
+
+    // Timer to change text if it takes too long (Render free tier cold start)
+    const timeoutId = setTimeout(() => {
+      setLoadingText("Waking up server...");
+    }, 3000);
+
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
     const url = `${BACKEND_URL}/auth/login`;
     const userDetails = {
@@ -125,11 +135,14 @@ const Login = () => {
 
     try {
       const response = await fetch(url, options);
+      clearTimeout(timeoutId); // Clear timer on response
       const data = await response.json();
 
       if (response.ok) {
         onSubmitSuccess(data.token, data.user);
       } else {
+        setIsSubmitting(false);
+        setLoadingText("Sign In");
         // Handle backend validation errors
         if (data.errors && Array.isArray(data.errors)) {
           const fieldErrors = {};
@@ -144,7 +157,17 @@ const Login = () => {
         setShowErrorMsg(true);
       }
     } catch (error) {
-      setErrorMsg("Network error. Please try again.");
+      clearTimeout(timeoutId);
+      setIsSubmitting(false);
+      setLoadingText("Sign In");
+      console.error("Login Error:", error);
+
+      let msg = "Network error. Please try again.";
+      if (error.message === "Failed to fetch" || error.name === "TypeError") {
+        msg = "Unable to connect to server. It might be waking up, please wait a moment and try again.";
+      }
+
+      setErrorMsg(msg);
       setShowErrorMsg(true);
     }
   };
@@ -173,8 +196,9 @@ const Login = () => {
             id="email"
             type="email"
             placeholder="you@example.com"
+            disabled={isSubmitting}
             className={`bg-black/40 border p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-white/10 focus:border-primary focus:ring-primary/30"
-              }`}
+              } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
           />
           {errors.email && (
             <p className="text-red-400 text-xs mt-1">{errors.email}</p>
@@ -191,8 +215,9 @@ const Login = () => {
             onChange={handlePasswordChange}
             id="password"
             placeholder="••••••••"
+            disabled={isSubmitting}
             className={`bg-black/40 border p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 transition-all text-white placeholder-gray-500 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : "border-white/10 focus:border-primary focus:ring-primary/30"
-              }`}
+              } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
           />
           {errors.password && (
             <p className="text-red-400 text-xs mt-1">{errors.password}</p>
@@ -207,19 +232,29 @@ const Login = () => {
 
         <button
           type="submit"
-          className="bg-primary hover:bg-red-700 cursor-pointer py-3 sm:py-4 rounded-lg font-semibold text-white text-sm sm:text-base shadow-lg transition-all duration-300 hover:shadow-primary/50 hover:scale-105 transform border border-white/10"
+          disabled={isSubmitting}
+          className={`bg-primary hover:bg-red-700 cursor-pointer py-3 sm:py-4 rounded-lg font-semibold text-white text-sm sm:text-base shadow-lg transition-all duration-300 hover:shadow-primary/50 hover:scale-105 transform border border-white/10 ${isSubmitting ? "opacity-75 cursor-wait" : ""}`}
         >
-          Sign In
+          {isSubmitting ? (
+            <div className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {loadingText}
+            </div>
+          ) : (
+            "Sign In"
+          )}
         </button>
 
         <p className="text-center text-sm sm:text-base mt-6 text-gray-400">
           Don't have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-red-400 hover:text-red-300 cursor-pointer font-semibold transition-colors"
+          <button
+            type="button"
+            onClick={() => !isSubmitting && navigate("/signup")}
+            disabled={isSubmitting}
+            className={`text-red-400 hover:text-red-300 cursor-pointer font-semibold transition-colors bg-transparent border-none p-0 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             Create one
-          </span>
+          </button>
         </p>
       </form>
     </div>
