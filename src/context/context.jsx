@@ -39,13 +39,16 @@ export const CartProvider = ({ children }) => {
             Cookies.remove("jwt_token");
             setUser(null);
             setTokenState(null);
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error verifying user:", error);
           setUser(null);
+          setIsLoading(false);
         }
       } else {
         setUser(null);
+        setIsLoading(false);
       }
 
     };
