@@ -95,7 +95,9 @@ const Cart = () => {
                 <h2 className="font-bold text-lg sm:text-2xl text-white group-hover:text-primary transition font-outfit">
                   {item.itemId?.name}
                 </h2>
-                <p className="text-gray-400 text-sm mt-2">Size: <span className="font-semibold text-gray-300">{item.size}</span></p>
+                {item.itemId?.category === "Pizza" && (
+                  <p className="text-gray-400 text-sm mt-2">Size: <span className="font-semibold text-gray-300">{item.size}</span></p>
+                )}
                 <p className="text-primary font-bold mt-3 text-xl">
                   ₹{item.itemId?.price?.[item.size?.toLowerCase()] || item.itemId?.price?.regular}
                 </p>
