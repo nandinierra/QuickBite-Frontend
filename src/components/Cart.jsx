@@ -139,7 +139,7 @@ const Cart = () => {
             onClick={handleClearCart}
             className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-700 cursor-pointer hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold transition-all hover:shadow-xl shadow-lg transform hover:scale-105"
           >
-            Clear Cart 🗑️
+            Clear Cart 
           </button>
           <button
             onClick={handleOrderNow}

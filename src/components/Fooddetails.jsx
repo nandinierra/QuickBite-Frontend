@@ -26,7 +26,7 @@ const Fooddetails = () => {
   const typefromurl = searchParams.get("type") || "All";
   const [selectedType, setSelectedType] = useState(typefromurl);
   const [searchTerm, setSearchTerm] = useState("");
-  const [size, setSize] = useState("regular");
+  const [selectedSizes, setSelectedSizes] = useState({});
 
 
 
@@ -89,7 +89,8 @@ const Fooddetails = () => {
 
   const addToCart = async (id) => {
     try {
-      const itemData = { itemId: id, quantity: 1, size };
+      const itemSize = selectedSizes[id] || "regular";
+      const itemData = { itemId: id, quantity: 1, size: itemSize };
       const result = await addItemToCart(itemData);
 
       if (result.success) {
@@ -231,8 +232,8 @@ const Fooddetails = () => {
                       {[["Regular", pizza.price.regular], ["Medium", pizza.price.medium], ["Large", pizza.price.large]].map(([sizeLabel, price]) => (
                         <button
                           key={sizeLabel}
-                          onClick={() => setSize(sizeLabel.toLowerCase())}
-                          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform hover:scale-105 ${size === sizeLabel.toLowerCase()
+                          onClick={() => setSelectedSizes({ ...selectedSizes, [pizza._id]: sizeLabel.toLowerCase() })}
+                          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform hover:scale-105 ${(selectedSizes[pizza._id] || "regular") === sizeLabel.toLowerCase()
                               ? "bg-gradient-to-r from-primary to-orange-600 text-white shadow-lg scale-105"
                               : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white border border-white/10"
                             }`}
