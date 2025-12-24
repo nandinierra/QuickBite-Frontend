@@ -133,32 +133,34 @@ const ViewDetails = () => {
             <div className="space-y-8">
 
               {/* Size Selection */}
-              <div>
-                <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-3">Select Size</h3>
-                <div className="flex flex-wrap gap-3">
-                  {[["Regular", item.price.regular], ["Medium", item.price.medium], ["Large", item.price.large]].map(([s, price]) => (
-                    <button
-                      key={s}
-                      onClick={() => setSize(s.toLowerCase())}
-                      className={`group relative px-6 py-3 rounded-xl border transition-all duration-300 overflow-hidden ${size === s.toLowerCase()
-                        ? "border-primary bg-primary/20 shadow-[0_0_20px_rgba(220,38,38,0.3)]"
-                        : "border-white/10 bg-white/5 hover:border-primary/50 hover:bg-white/10"
-                        }`}
-                    >
-                      <span className={`relative z-10 flex flex-col items-start ${size === s.toLowerCase() ? "text-white" : "text-gray-400 group-hover:text-white"
-                        }`}>
-                        <span className="font-bold text-sm uppercase">{s}</span>
-                        <span className="font-outfit text-lg">₹{price}</span>
-                      </span>
-                    </button>
-                  ))}
+              {item.category === "Pizza" && (
+                <div>
+                  <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-3">Select Size</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {[["Regular", item.price.regular], ["Medium", item.price.medium], ["Large", item.price.large]].map(([s, price]) => (
+                      <button
+                        key={s}
+                        onClick={() => setSize(s.toLowerCase())}
+                        className={`group relative px-6 py-3 rounded-xl border transition-all duration-300 overflow-hidden ${size === s.toLowerCase()
+                          ? "border-primary bg-primary/20 shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+                          : "border-white/10 bg-white/5 hover:border-primary/50 hover:bg-white/10"
+                          }`}
+                      >
+                        <span className={`relative z-10 flex flex-col items-start ${size === s.toLowerCase() ? "text-white" : "text-gray-400 group-hover:text-white"
+                          }`}>
+                          <span className="font-bold text-sm uppercase">{s}</span>
+                          <span className="font-outfit text-lg">₹{price}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Price Display */}
               <div className="flex items-end gap-2">
                 <span className="text-4xl font-extrabold text-white font-outfit">
-                  ₹{item.price[size] * quantity}
+                  ₹{item.category === "Pizza" ? item.price[size] * quantity : item.price.regular * quantity}
                 </span>
                 <span className="text-gray-500 mb-1 ml-1 text-sm font-medium">Total Price</span>
               </div>
