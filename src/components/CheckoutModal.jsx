@@ -3,7 +3,7 @@ import { useCart } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3060";
 
 const CheckoutModal = ({ isOpen, onClose, cartTotal }) => {
   const { token, handleClearCart } = useCart();

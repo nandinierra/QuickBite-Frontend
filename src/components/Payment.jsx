@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/context';
 import { toast } from 'react-toastify';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3060";
 
 const Payment = () => {
     const location = useLocation();
@@ -45,8 +45,9 @@ const Payment = () => {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
+                            // Authorization: `Bearer ${token}`,
                         },
+                        credentials: "include",
                     });
 
                     if (!retryResponse.ok) {
@@ -68,8 +69,9 @@ const Payment = () => {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
+                            // Authorization: `Bearer ${token}`,
                         },
+                        credentials: "include",
                         body: JSON.stringify({
                             deliveryDetails: formData,
                             notes: { description: "Order from QuickBite app" }
@@ -110,8 +112,9 @@ const Payment = () => {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
-                                    Authorization: `Bearer ${token}`,
+                                    // Authorization: `Bearer ${token}`,
                                 },
+                                credentials: "include",
                                 body: JSON.stringify({
                                     razorpayOrderId: response.razorpay_order_id,
                                     razorpayPaymentId: response.razorpay_payment_id,

@@ -2,7 +2,7 @@
 
 import { useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import Cookies from "js-cookie";
+
 import { useCart } from "../context/context";
 
 const Login = () => {
@@ -23,8 +23,7 @@ const Login = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    const token = Cookies.get("jwt_token");
-    if (token && user) {
+    if (user) {
       if (user.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -36,7 +35,7 @@ const Login = () => {
   const onSubmitSuccess = (token, user) => {
     console.log("Login Success - User:", user);
     console.log("Login Success - Role:", user?.role);
-    Cookies.set("jwt_token", token, { expires: 30 });
+
 
     // IMMEDIATELY update global state so ProtectedRoute sees the user
     updateUser(user);
@@ -48,7 +47,7 @@ const Login = () => {
     } else {
       console.log("Redirecting to / (Home)");
       navigate("/", { replace: true });
-      setIsLoading(true)
+
     }
   };
 
@@ -120,7 +119,7 @@ const Login = () => {
       setLoadingText("Waking up server...");
     }, 3000);
 
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3060";
     const url = `${BACKEND_URL}/auth/login`;
     const userDetails = {
       email: email.trim().toLowerCase(),
@@ -132,6 +131,7 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(userDetails),
     };
 

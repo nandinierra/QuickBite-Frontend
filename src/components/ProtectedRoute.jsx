@@ -1,9 +1,9 @@
-import Cookies from 'js-cookie'
+
 import { Navigate } from 'react-router'
 import { useCart } from '../context/context'
 
 function ProtectedRoute({ children, adminOnly = false, userOnly = false }) {
-  const jwtToken = Cookies.get('jwt_token')
+
   const { user, isLoading } = useCart()
 
   if (isLoading) {
@@ -14,7 +14,7 @@ function ProtectedRoute({ children, adminOnly = false, userOnly = false }) {
     )
   }
 
-  if (!jwtToken) {
+  if (!user && !isLoading) {
     return <Navigate to="/login" replace={true} />
   }
 

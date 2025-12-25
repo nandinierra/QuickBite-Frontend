@@ -71,12 +71,12 @@ export const useSignup = () => {
             return;
         }
 
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3060";
         const userDetails = { name: name.trim(), email: email.trim(), password, role, ...(role === "admin" && { adminSecretKey: adminSecretKey.trim() }) };
 
         try {
             const response = await fetch(`${BACKEND_URL}/auth/register`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(userDetails),
+                method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(userDetails),
             });
             const data = await response.json();
 
@@ -108,7 +108,7 @@ export const useSignup = () => {
         errors, errorMsg, showErrorMsg,
         signupForm,
         navigate,
-        token: Cookies.get("jwt_token")
+        // token: Cookies.get("jwt_token")
     };
 };
 

@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { cartReducer, initialState } from "../reducer/cartReducer.jsx";
 import { toast } from "react-toastify"
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://quickbite-backendd.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3060";
 
 const CartContext = createContext();
 
@@ -14,47 +14,50 @@ export const CartProvider = ({ children }) => {
   const [hasInitialized, setHasInitialized] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [tokenState, setTokenState] = useState(() => Cookies.get("jwt_token"));
-  const token = tokenState;
+  // const [tokenState, setTokenState] = useState(() => Cookies.get("jwt_token"));
+  // const token = tokenState; // Derived for backward compatibility check if needed, but better to rely on user state
 
   // Verify user and fetch user details on mount or when token changes
   useEffect(() => {
     const verifyUserToken = async () => {
-      if (token) {
-        try {
-          const response = await fetch(`${BACKEND_URL}/auth/api/verify`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
+      // if (token) {
+      try {
+        const response = await fetch(`${BACKEND_URL}/auth/api/verify`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${token}`,
+          },
+          credentials: "include", // Send cookies
+        });
 
-          if (response.ok) {
-            const result = await response.json();
-            setUser(result.user);
-            setIsLoading(false);
-          } else {
-            // Token is invalid
-            Cookies.remove("jwt_token");
-            setUser(null);
-            setTokenState(null);
-            setIsLoading(false);
-          }
-        } catch (error) {
-          console.error("Error verifying user:", error);
+        if (response.ok) {
+          const result = await response.json();
+          setUser(result.user);
+          setIsLoading(false);
+        } else {
+          // Token is invalid
+          // Cookies.remove("jwt_token");
           setUser(null);
+          // setTokenState(null);
           setIsLoading(false);
         }
-      } else {
+      } catch (error) {
+        console.error("Error verifying user:", error);
         setUser(null);
         setIsLoading(false);
       }
+    }
+    // }
+    // else {
+    //   setUser(null);
+    //   setIsLoading(false);
+    // }
 
-    };
+
 
     verifyUserToken();
-  }, [token]);
+  }, []); // Run once on mount
 
   const fetchCartItems = useCallback(async () => {
     try {
@@ -62,8 +65,9 @@ export const CartProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       });
 
       const result = await response.json();
@@ -83,15 +87,15 @@ export const CartProvider = ({ children }) => {
       // On error, initialize with empty cart
       dispatch({ type: "SET_CART", payload: { data: { foodItems: [] }, length: 0 } });
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
-    if (!hasInitialized && token) {
+    if (!hasInitialized && user) { // Check user existence as proxy for "authenticated"
       fetchCartItems();
 
       setHasInitialized(true);
     }
-  }, [token, hasInitialized, fetchCartItems]);
+  }, [hasInitialized, fetchCartItems]);
 
 
 
@@ -128,8 +132,9 @@ export const CartProvider = ({ children }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
         body: JSON.stringify({ action }),
       });
 
@@ -187,7 +192,10 @@ export const CartProvider = ({ children }) => {
       // Send delete request to backend
       const response = await fetch(`${BACKEND_URL}/cart/deleteItem/${itemId}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          // Authorization: `Bearer ${token}` 
+        },
+        credentials: "include",
       });
 
       console.log("Delete response status:", response.status);
@@ -231,7 +239,10 @@ export const CartProvider = ({ children }) => {
       // Send clear request to backend
       const response = await fetch(`${BACKEND_URL}/cart/clear`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          // Authorization: `Bearer ${token}` 
+        },
+        credentials: "include",
       });
 
       console.log("Clear cart response status:", response.status);
@@ -283,8 +294,8 @@ export const CartProvider = ({ children }) => {
       }
 
       // Check if user is authenticated
-      if (!token) {
-        console.error("User not authenticated - no token available");
+      if (!user) {
+        console.error("User not authenticated");
         return { success: false, isNewItem: false };
       }
 
@@ -295,7 +306,7 @@ export const CartProvider = ({ children }) => {
 
       let isNewItem = !existingItem;
 
-      console.log("Adding to cart:", { itemData, isNewItem, tokenExists: !!token });
+      console.log("Adding to cart:", { itemData, isNewItem, userExists: !!user });
 
       // Optimistic UI Update
       const optimisticItem = {
@@ -337,8 +348,9 @@ export const CartProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
         body: JSON.stringify(itemData),
       });
 
@@ -367,27 +379,31 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    Cookies.remove("jwt_token");
-    setTokenState(null);
+  const logout = async () => {
+    try {
+      await fetch(`${BACKEND_URL}/auth/logout`, { method: "POST" });
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
     setUser(null);
     dispatch({ type: "CLEAR_CART" });
   };
 
   const updateTokenState = () => {
-    const newToken = Cookies.get("jwt_token");
-    setTokenState(newToken);
+    // const newToken = Cookies.get("jwt_token");
+    // setTokenState(newToken);
   };
 
   const refreshUser = useCallback(async () => {
-    if (!token) return;
+    // if (!token) return;
     try {
       const response = await fetch(`${BACKEND_URL}/auth/api/verify`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -397,7 +413,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("Error refreshing user data:", error);
     }
-  }, [token]);
+  }, []);
 
   const updateUser = (updatedUserData) => {
     setUser((prevUser) => ({
@@ -420,7 +436,7 @@ export const CartProvider = ({ children }) => {
         isLoading,
         setIsLoading,
         logout,
-        token,
+        token: !!user, // Expose token as boolean for backward compatibility check
         updateTokenState,
         refreshUser,
         updateUser
