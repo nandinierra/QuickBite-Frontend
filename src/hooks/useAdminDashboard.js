@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from "react";
 import { useCart } from "../context/context";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +54,10 @@ export const useAdminDashboard = () => {
         setLoading(true);
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/all`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    // Authorization: `Bearer ${token}` 
+                },
+                credentials: "include",
             });
             const data = await response.json();
             if (response.ok) setFoodItems(data.food);
@@ -85,11 +90,14 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/delete/${id}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    // Authorization: `Bearer ${token}` 
+                },
+                credentials: "include",
             });
             if (response.ok) {
                 toast.success("Item deleted successfully");
-                fetchFoodItems();
+                setFoodItems(prev => prev.filter(item => item._id !== id));
             } else {
                 const data = await response.json();
                 toast.error(data.message || "Failed to delete item");
@@ -104,11 +112,14 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/deactivate/${id}`, {
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    // Authorization: `Bearer ${token}` 
+                },
+                credentials: "include",
             });
             if (response.ok) {
                 toast.success("Item deactivated successfully");
-                fetchFoodItems();
+                setFoodItems(prev => prev.map(item => item._id === id ? { ...item, isActive: false } : item));
             } else {
                 const data = await response.json();
                 toast.error(data.message || "Failed to deactivate item");
@@ -123,11 +134,14 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/reactivate/${id}`, {
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    // Authorization: `Bearer ${token}` 
+                },
+                credentials: "include",
             });
             if (response.ok) {
                 toast.success("Item reactivated successfully");
-                fetchFoodItems();
+                setFoodItems(prev => prev.map(item => item._id === id ? { ...item, isActive: true } : item));
             } else {
                 const data = await response.json();
                 toast.error(data.message || "Failed to reactivate item");
@@ -211,11 +225,21 @@ export const useAdminDashboard = () => {
             let response;
             if (editingId) {
                 response = await fetch(`${BACKEND_URL}/foodItems/admin/update/${editingId}`, {
-                    method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(formData),
+                    method: "PUT", headers: {
+                        "Content-Type": "application/json",
+                        // Authorization: `Bearer ${token}` 
+                    },
+                    credentials: "include",
+                    body: JSON.stringify(formData),
                 });
             } else {
                 response = await fetch(`${BACKEND_URL}/foodItems/admin/create`, {
-                    method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(formData),
+                    method: "POST", headers: {
+                        "Content-Type": "application/json",
+                        // Authorization: `Bearer ${token}` 
+                    },
+                    credentials: "include",
+                    body: JSON.stringify(formData),
                 });
             }
             const data = await response.json();

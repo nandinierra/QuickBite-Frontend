@@ -36,11 +36,11 @@ const Login = () => {
   const onSubmitSuccess = (token, user) => {
     console.log("Login Success - User:", user);
     console.log("Login Success - Role:", user?.role);
-    Cookies.set("jwt_token", token, { expires: 30 });
+    // Cookies.set("jwt_token", token, { expires: 30 }); // Handled by HttpOnly cookie
 
     // IMMEDIATELY update global state so ProtectedRoute sees the user
     updateUser(user);
-    updateTokenState();
+    // updateTokenState(); // No longer needed as we don't manage token state manually manually
 
     if (user?.role === "admin") {
       console.log("Redirecting to /admin");

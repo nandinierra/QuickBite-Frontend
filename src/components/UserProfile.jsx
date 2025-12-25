@@ -24,7 +24,11 @@ const UserProfile = () => {
     try {
       setIsLoading(true);
       const response = await fetch(`${BACKEND_URL}/profile/get`, {
-        method: "GET", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+        method: "GET", headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}` 
+        },
+        credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to fetch profile");
       const data = await response.json();
@@ -54,7 +58,12 @@ const UserProfile = () => {
     try {
       setIsSaving(true);
       const response = await fetch(`${BACKEND_URL}/profile/update`, {
-        method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(editFormData)
+        method: "PUT", headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}` 
+        },
+        credentials: "include",
+        body: JSON.stringify(editFormData)
       });
       if (!response.ok) { const error = await response.json(); throw new Error(error.message || "Failed to update profile"); }
       const data = await response.json();
@@ -82,7 +91,11 @@ const UserProfile = () => {
       const formData = new FormData();
       formData.append("profilePicture", file);
       const response = await fetch(`${BACKEND_URL}/profile/upload-picture`, {
-        method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData
+        method: "POST", headers: {
+          // Authorization: `Bearer ${token}` 
+        },
+        credentials: "include",
+        body: formData
       });
       if (!response.ok) { const error = await response.json(); throw new Error(error.message || "Failed to upload image"); }
       const data = await response.json();

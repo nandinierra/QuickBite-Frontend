@@ -108,7 +108,8 @@ export const useSignup = () => {
         errors, errorMsg, showErrorMsg,
         signupForm,
         navigate,
-        token: Cookies.get("jwt_token")
+        navigate,
+        // token: Cookies.get("jwt_token") 
     };
 };
 
