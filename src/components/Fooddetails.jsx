@@ -234,8 +234,8 @@ const Fooddetails = () => {
                           key={sizeLabel}
                           onClick={() => setSelectedSizes({ ...selectedSizes, [pizza._id]: sizeLabel.toLowerCase() })}
                           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all transform hover:scale-105 ${(selectedSizes[pizza._id] || "regular") === sizeLabel.toLowerCase()
-                              ? "bg-gradient-to-r from-primary to-orange-600 text-white shadow-lg scale-105"
-                              : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white border border-white/10"
+                            ? "bg-gradient-to-r from-primary to-orange-600 text-white shadow-lg scale-105"
+                            : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white border border-white/10"
                             }`}
                         >
                           {sizeLabel} ₹{price}

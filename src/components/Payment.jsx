@@ -45,9 +45,8 @@ const Payment = () => {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            // Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token}`,
                         },
-                        credentials: "include",
                     });
 
                     if (!retryResponse.ok) {
@@ -69,9 +68,8 @@ const Payment = () => {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            // Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token}`,
                         },
-                        credentials: "include",
                         body: JSON.stringify({
                             deliveryDetails: formData,
                             notes: { description: "Order from QuickBite app" }
@@ -112,9 +110,8 @@ const Payment = () => {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
-                                    // Authorization: `Bearer ${token}`,
+                                    Authorization: `Bearer ${token}`,
                                 },
-                                credentials: "include",
                                 body: JSON.stringify({
                                     razorpayOrderId: response.razorpay_order_id,
                                     razorpayPaymentId: response.razorpay_payment_id,

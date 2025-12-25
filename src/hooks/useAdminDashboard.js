@@ -54,10 +54,7 @@ export const useAdminDashboard = () => {
         setLoading(true);
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/all`, {
-                headers: {
-                    // Authorization: `Bearer ${token}` 
-                },
-                credentials: "include",
+                headers: { Authorization: `Bearer ${token}` },
             });
             const data = await response.json();
             if (response.ok) setFoodItems(data.food);
@@ -90,10 +87,7 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/delete/${id}`, {
                 method: "DELETE",
-                headers: {
-                    // Authorization: `Bearer ${token}` 
-                },
-                credentials: "include",
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (response.ok) {
                 toast.success("Item deleted successfully");
@@ -112,10 +106,7 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/deactivate/${id}`, {
                 method: "PATCH",
-                headers: {
-                    // Authorization: `Bearer ${token}` 
-                },
-                credentials: "include",
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (response.ok) {
                 toast.success("Item deactivated successfully");
@@ -134,10 +125,7 @@ export const useAdminDashboard = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/foodItems/admin/reactivate/${id}`, {
                 method: "PATCH",
-                headers: {
-                    // Authorization: `Bearer ${token}` 
-                },
-                credentials: "include",
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (response.ok) {
                 toast.success("Item reactivated successfully");
@@ -225,21 +213,11 @@ export const useAdminDashboard = () => {
             let response;
             if (editingId) {
                 response = await fetch(`${BACKEND_URL}/foodItems/admin/update/${editingId}`, {
-                    method: "PUT", headers: {
-                        "Content-Type": "application/json",
-                        // Authorization: `Bearer ${token}` 
-                    },
-                    credentials: "include",
-                    body: JSON.stringify(formData),
+                    method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(formData),
                 });
             } else {
                 response = await fetch(`${BACKEND_URL}/foodItems/admin/create`, {
-                    method: "POST", headers: {
-                        "Content-Type": "application/json",
-                        // Authorization: `Bearer ${token}` 
-                    },
-                    credentials: "include",
-                    body: JSON.stringify(formData),
+                    method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(formData),
                 });
             }
             const data = await response.json();
