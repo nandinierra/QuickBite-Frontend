@@ -34,7 +34,7 @@ const App = () => {
         {!hiddenpath && <Navbar />}
         <div className={hiddenpath ? "" : requiredPath === "/" ? "" : "pt-16 sm:pt-20"}>
           <Routes>
-            <Route path="/" element={<ProtectedRoute userOnly={true}><Home /></ProtectedRoute>} />
+            <Route path="/*" element={<ProtectedRoute userOnly={true}><Home /></ProtectedRoute>} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/food/:category" element={<ProtectedRoute userOnly={true}><Fooddetails /></ProtectedRoute>} />

@@ -23,7 +23,9 @@ const Fooddetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const typefromurl = searchParams.get("type") || "All";
+  
   const [selectedType, setSelectedType] = useState(typefromurl);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSizes, setSelectedSizes] = useState({});

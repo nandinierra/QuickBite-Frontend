@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer, useState, useCallback } from "react";
-import Cookies from "js-cookie";
+
 import { cartReducer, initialState } from "../reducer/cartReducer.jsx";
 import { toast } from "react-toastify"
 
@@ -381,7 +381,7 @@ export const CartProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch(`${BACKEND_URL}/auth/logout`, { method: "POST" });
+      await fetch(`${BACKEND_URL}/auth/logout`,{ method: "POST", headers:{"Content-Type":"application/json"}, credentials:'include' });
     } catch (error) {
       console.error("Logout failed", error);
     }
