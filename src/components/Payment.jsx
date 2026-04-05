@@ -121,7 +121,7 @@ const Payment = () => {
                                     razorpaySignature: response.razorpay_signature,
                                 }),
                             });
-
+  
                             const verifyData = await verifyResponse.json();
 
                             if (!verifyResponse.ok) {
@@ -138,6 +138,8 @@ const Payment = () => {
                                 toast.success("Payment completed successfully!");
                                 navigate("/profile", { replace: true });
                             }
+
+
 
                         } catch (err) {
                             console.error("Payment verification error:", err);

@@ -16,6 +16,8 @@ const Cart = () => {
 
 
 
+    
+
   const handleOrderNow = () => {
     if (!cart?.data?.foodItems || cart.data.foodItems.length === 0) {
       return;

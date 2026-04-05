@@ -59,7 +59,9 @@ export const CartProvider = ({ children }) => {
     verifyUserToken();
   }, []); // Run once on mount
 
+  
   const fetchCartItems = useCallback(async () => {
+    dispatch({ type: "SET_LOADING", payload: true });
     try {
       const response = await fetch(`${BACKEND_URL}/cart/getItems`, {
         method: "GET",
@@ -89,13 +91,16 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
+  
   useEffect(() => {
     if (!hasInitialized && user) { // Check user existence as proxy for "authenticated"
       fetchCartItems();
 
       setHasInitialized(true);
     }
-  }, [hasInitialized, fetchCartItems]);
+  }, [hasInitialized, fetchCartItems, user]);
+
+
 
 
 
@@ -380,13 +385,19 @@ export const CartProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    setUser(null);
+    setHasInitialized(false);
+    dispatch({ type: "CLEAR_CART" });
+
     try {
-      await fetch(`${BACKEND_URL}/auth/logout`,{ method: "POST", headers:{"Content-Type":"application/json"}, credentials:'include' });
+      await fetch(`${BACKEND_URL}/auth/logout`,
+        { method: "POST",
+           headers:{"Content-Type":"application/json"},
+            credentials:'include'
+           });
     } catch (error) {
       console.error("Logout failed", error);
     }
-    setUser(null);
-    dispatch({ type: "CLEAR_CART" });
   };
 
   const updateTokenState = () => {

@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/context";
 
+
+
+
+
+
 export const useNavbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -15,7 +20,7 @@ export const useNavbar = () => {
         if (location.pathname === "/") setNavbarBg(window.scrollY > 50);
         else setNavbarBg(true);
 
-        if (location.pathname === "/") {
+        if (location.pathname  ===  "/") {
             const categories = document.getElementById("categories-section");
             const popular = document.getElementById("popular-section");
             const scrollPos = window.scrollY + window.innerHeight / 2;
@@ -38,8 +43,8 @@ export const useNavbar = () => {
         setMenuOpen(false);
     };
 
-    const logoutBtn = () => {
-        logout();
+    const logoutBtn = async () => {
+        await logout();
         navigate("/login", { replace: true });
         setProfileDropdownOpen(false);
         setMenuOpen(false);

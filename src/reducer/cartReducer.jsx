@@ -20,6 +20,9 @@ export const initialState = {
 export function cartReducer(state, action) {
   console.log("action", action)
   switch (action.type) {
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+
     case "SET_CART": {
       // Filter out items with null itemId to prevent crashes
       const validFoodItems = action.payload?.data?.foodItems?.filter(item => item?.itemId) || [];
