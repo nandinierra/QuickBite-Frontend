@@ -18,6 +18,7 @@ import AdminDashboard from "./components/AdminDashboard.jsx"
 import UserProfile from "./components/UserProfile.jsx"
 import Payment from "./components/Payment.jsx"
 import { CartProvider } from "./context/context.jsx";
+import QuickChefAI from "./components/QuickChefAI.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,6 +50,7 @@ const App = () => {
           </Routes>
         </div>
         {!hiddenpath && <Footer />}
+        <QuickChefAI />
       </div>
       <ToastContainer />
     </CartProvider>
