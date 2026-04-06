@@ -13,35 +13,54 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { useCart } from '../context/context';
 
 // Using port 5000 for the Python Flask AI Backend
 const AI_BACKEND_URL = "http://localhost:5000";
 
 const QuickChefAI = () => {
+  const { user } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const location = useLocation();
   
-  // Initial message for new chats
-  const initialMessage = { 
-    id: 1, 
-    text: "Hey there! I'm your 'QuickChef AI'. 🥗 Hungry? 🍕 stuck on what to order? I can help! Just ask me anything about our delicious menu items. 😊", 
-    sender: "ai" 
-  };
+  // Use user email as steady threadId for cross-refresh persistence
+  const threadId = user?.email || "anonymous_guest";
 
-  // Load messages from localStorage on mount
-  const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("quickchef_chat");
-    return saved ? JSON.parse(saved) : [initialMessage];
-  });
-
+  // Messages are now only kept in React state, synced with Backend
+  const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Save messages to localStorage whenever they change
+  // Initial greeting
+  const initialGreeting = { 
+    id: "init", 
+    text: "Hey there! I'm your 'QuickChef AI'. 🥗 Stuck on what to order? I can help! 😊", 
+    sender: "ai" 
+  };
+
+  // On mount: Fetch existing session history from Backend (Rufus Style)
   useEffect(() => {
-    localStorage.setItem("quickchef_chat", JSON.stringify(messages));
-  }, [messages]);
+    const fetchHistory = async () => {
+      try {
+        const response = await axios.get(`${AI_BACKEND_URL}/api/chat/${threadId}`);
+        if (response.data.messages && response.data.messages.length > 0) {
+          const formatted = response.data.messages.map((m, index) => ({
+            id: index,
+            text: m.text,
+            sender: m.role === "user" ? "user" : "ai"
+          }));
+          setMessages(formatted);
+        } else {
+          setMessages([initialGreeting]);
+        }
+      } catch (err) {
+        console.error("Failed to sync with AI kitchen:", err);
+        setMessages([initialGreeting]);
+      }
+    };
+    fetchHistory();
+  }, [threadId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,28 +72,22 @@ const QuickChefAI = () => {
     }
   }, [messages, isOpen]);
 
-
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = { id: Date.now(), text: input, sender: "user" };
     setMessages(prev => [...prev, userMessage]);
     
-    // Create a history context to send to the backend
-    const history = messages.slice(-6).map(m => ({
-        role: m.sender === "user" ? "user" : "model",
-        text: m.text
-    }));
-
     setInput("");
     setIsLoading(true);
 
     try {
-      // POST to our new Python Flask API with history
+      // Rufus logic: Send ONLY prompt and threadId. No history from frontend.
       const response = await axios.post(`${AI_BACKEND_URL}/api/ask`, { 
         prompt: input,
-        history: history
+        threadId: threadId
       });
+
       const aiReply = { 
         id: Date.now() + 1, 
         text: response.data.reply, 
@@ -85,7 +98,7 @@ const QuickChefAI = () => {
       console.error("AI Assistant Error:", error);
       const errorMessage = { 
         id: Date.now() + 1, 
-        text: "I'm having a little trouble connecting with the kitchen right now. Please try again! 🍽️🥓", 
+        text: "My kitchen circuit is a bit hot! Please try again in a moment. 🍽️🔥", 
         sender: "ai" 
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -94,9 +107,14 @@ const QuickChefAI = () => {
     }
   };
 
-  const clearChat = () => {
-    localStorage.removeItem("quickchef_chat");
-    setMessages([initialMessage]);
+  const clearChat = async () => {
+    try {
+      // Purge session from backend
+      await axios.delete(`${AI_BACKEND_URL}/api/chat/${threadId}`);
+      setMessages([initialGreeting]);
+    } catch (err) {
+      console.error("Failed to clear session:", err);
+    }
   };
 
   // Hide bot on Auth pages
