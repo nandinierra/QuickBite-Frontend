@@ -16,7 +16,8 @@ import axios from "axios";
 import { useCart } from '../context/context';
 
 // Using port 5000 for the Python Flask AI Backend
-const AI_BACKEND_URL = "http://localhost:5000";
+// const AI_BACKEND_URL = "http://localhost:5000";
+const AI_BACKEND_URL = import.meta.env.AI_BACKEND_URL;
 
 const QuickChefAI = () => {
   const { user } = useCart();
